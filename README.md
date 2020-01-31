@@ -21,3 +21,43 @@ VR player alias: Antivirus<br>
 * Weapon cooldown: CPU usage full
 * Drawbacks TBD
 * More actions for User
+
+## This repository
+Instructions on how to use and maintain the repository
+
+### Download the project for the first time
+* Head over to the GitHub desktop download page (https://desktop.github.com/)
+* Download GitHub desktop, open it, login with your GitHub account when prompted
+* Select File -> Clone repository
+* If you cannot locate the `group-theme` repository from the GitHub repositories list, click on URL
+* Write `WittyScrap/group-theme` in the URL field
+* Select the local path in which you wish to store the UE4 project
+* Clone the repository
+* Change the current branch from master to the most appropriate for whichever task you will perform
+* Head into the project directory and open the .uproject file from there, alternatively start UE4 (v4.22.3) and locate the project from the open menu within it
+
+The following steps _may not_ be necessary, but should be followed anyway just for safety.
+
+* In the Unreal editor, select the Source Control menu from the toolbar
+* Select "Connect to source control"
+* Select GitHub, enter https://github.com/WittyScrap/group-theme.git in the URL field
+
+### Commit a change you have made locally
+Before a change gets synchronized back to this repository, it will be made into a local "commit". Commits are simply a list of changes that you have made to the project locally.<br>
+To check in changes locally:
+
+* In the Unreal editor, select the Source Control menu from the toolbar
+* Select the Submit to source control option
+* Enter a message describing what changes you have made
+* Submit
+
+### Pushing your recent local commits to the online repository
+Committing locally does not alter this online repository, to do so:
+
+* Open GitHub desktop
+* Ensure the Current Repository is set to be the correct one
+* Select the Publish changes option on the toolbar
+* If any merge conflicts ensue, they will need to be discussed
+
+### Refresh your local repository with any new changes in the remote repository
+From within GitHub desktop, select Repository -> Pull
