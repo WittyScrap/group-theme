@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "AVRController.generated.h"
+#include "VRController.generated.h"
 
 UCLASS()
-class GROUPPROJECT_API AAVRController : public ACharacter
+class GROUPPROJECT_API AVRController : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AAVRController();
+	AVRController();
 
 protected:
 	// Called when the game starts or when spawned
