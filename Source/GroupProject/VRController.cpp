@@ -5,7 +5,7 @@
 #include "IXRTrackingSystem.h"
 
 // Configures a VR hand with a specified hand target.
-void AVRController::SetupHand(UMotionControllerComponent*& target, const EControllerHand& hand)
+void AVRController::SetupHand(UMotionControllerComponent* target, const EControllerHand& hand)
 {
 	target->SetupAttachment(VRRoot);
 	target->SetTrackingSource(hand);
@@ -81,7 +81,7 @@ IHeadMountedDisplay* AVRController::GetCurrentHMD()
 // Gets the current position of various VR components.
 void AVRController::GetVRPositions(FTransform& head, FTransform& leftHand, FTransform& rightHand) const
 {
-	if (!GEngine)
+	if (!GEngine || !GEngine->XRSystem)
 	{
 		head = FTransform::Identity;
 		leftHand = FTransform::Identity;

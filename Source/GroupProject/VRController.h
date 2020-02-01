@@ -17,21 +17,13 @@ UCLASS()
 class GROUPPROJECT_API AVRController : public ACharacter
 {
 	GENERATED_BODY()
-		
-private:
-	/**
-	 * Print:
-	 * Allows for a log message to be printed to either the log
-	 * console or the screen.
-	 *
-	 */
-	static FORCEINLINE void Print(FString, bool = false, FColor = FColor::Green, float = 1.f);
 
+private:
 	// The VR headset that is used by this controller.
 	IHeadMountedDisplay* VRHeadset;
 
 	// Configures a motion controller as a VR hand of the given type.
-	void SetupHand(UMotionControllerComponent*& target, const EControllerHand& hand);
+	void SetupHand(UMotionControllerComponent* target, const EControllerHand& hand);
 
 public:
 	// Sets default values for this character's properties
@@ -76,7 +68,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Graphics Components", meta = (EditCondition = "bUseCustomHands"))
 	UStaticMesh* HandMesh;
 
-
 	/////////////
 	// Methods //
 	/////////////
@@ -98,26 +89,3 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "VR tools")
 	void GetVRPositions(FTransform& head, FTransform& lHand, FTransform& rHand) const;
 };
-
-// ---------------------------------
-// -- Inline function definitions --
-// ---------------------------------
-
-/**
- * Print:
- * Allows for a log message to be printed to either the log
- * console or the screen.
- *
- */
-FORCEINLINE void AVRController::Print(FString text, bool log, FColor color, float time)
-{
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, time, color, text);
-	}
-
-	if (log)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *text);
-	}
-}
