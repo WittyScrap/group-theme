@@ -4,6 +4,21 @@
 #include "VRController.h"
 #include "IXRTrackingSystem.h"
 
+// Configures a VR hand with a specified hand target.
+void AVRController::SetupHand(UMotionControllerComponent*& target, const EControllerHand& hand)
+{
+	target->SetupAttachment(VRRoot);
+	target->SetTrackingSource(hand);
+	target->SetShowDeviceModel(bDisplayHands);
+	target->SetDisplayModelSource(bUseCustomHands ? "Custom" : "SteamVR");
+	target->SetCustomDisplayMesh(HandMesh);
+
+	if (target)
+	{
+		target->SetIsReplicated(true);
+	}
+}
+
 // Sets default values
 AVRController::AVRController()
 {
@@ -21,22 +36,7 @@ AVRController::AVRController()
 	/* ------- Create VR controllers --------- */
 
 	LeftHand = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("VR Left Hand"));
-	LeftHand->SetupAttachment(VRRoot);
-	LeftHand->SetTrackingSource(EControllerHand::Left);
-
 	RightHand = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("VR Right Hand"));
-	RightHand->SetupAttachment(VRRoot);
-	RightHand->SetTrackingSource(EControllerHand::Right);
-
-	if (LeftHand)
-	{
-		LeftHand->SetIsReplicated(true);
-	}
-
-	if (RightHand)
-	{
-		RightHand->SetIsReplicated(true);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +44,8 @@ void AVRController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetupHand(LeftHand, EControllerHand::Left);
+	SetupHand(RightHand, EControllerHand::Right);
 }
 
 // Called every frame
