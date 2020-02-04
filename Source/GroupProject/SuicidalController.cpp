@@ -11,13 +11,11 @@ ASuicidalController::ASuicidalController()
 
 	USceneComponent* root = GetRootComponent();
 
-	PlayerGraphics = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Graphics"));
-	CameraSmoothener = CreateDefaultSubobject<USpringArmComponent>(TEXT("Smoothener"));
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-
+	PlayerGraphics = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerGraphics"));
 	PlayerGraphics->SetupAttachment(root);
-	CameraSmoothener->SetupAttachment(root);
-	Camera->SetupAttachment(root);
+
+	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
+	PlayerCamera->SetupAttachment(PlayerGraphics);
 }
 
 // Called when the game starts or when spawned
@@ -27,11 +25,42 @@ void ASuicidalController::BeginPlay()
 	
 }
 
+// Handles controller horizontal movement.
+void ASuicidalController::OnHorizontalMovement(float value)
+{
+	RegisterHorizontalMovement(value);
+}
+
+// Handles controller vertical movement.
+void ASuicidalController::OnVerticalMovement(float value)
+{
+	RegisterVerticalMovement(value);
+}
+
+// Performs a jump.
+void ASuicidalController::OnJump()
+{
+	Jump();
+}
+
+// Consumes the stored movement vector and returns it.
+const FVector ASuicidalController::ConsumeMovementVector()
+{
+	FVector movement(StoredMovement);
+	
+	StoredMovement.X = 0;
+	StoredMovement.Y = 0;
+	StoredMovement.Z = 0;
+
+	return movement;
+}
+
 // Called every frame
 void ASuicidalController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AddMovementInput(ConsumeMovementVector(), 1.f, false);
 }
 
 // Called to bind functionality to input
@@ -39,5 +68,20 @@ void ASuicidalController::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(XAxis, this, &ASuicidalController::OnHorizontalMovement);
+	PlayerInputComponent->BindAxis(YAxis, this, &ASuicidalController::OnVerticalMovement);
+	PlayerInputComponent->BindAction(AJump, IE_Pressed, this, &ASuicidalController::OnJump);
+}
+
+// Stores horizontal movement.
+void ASuicidalController::RegisterHorizontalMovement(const float& value)
+{
+	StoredMovement.X += value;
+}
+
+// Stores vertical movement.
+void ASuicidalController::RegisterVerticalMovement(const float& value)
+{
+	StoredMovement.Y += value;
 }
 
