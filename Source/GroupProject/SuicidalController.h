@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 ///////////////////////////////////////////
 #include "SuicidalController.generated.h"//
@@ -20,6 +22,19 @@ UCLASS()
 class GROUPPROJECT_API ASuicidalController : public ACharacter
 {
 	GENERATED_BODY()
+
+protected:
+	// Manages player graphics side.
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UStaticMeshComponent* PlayerGraphics;
+
+	// Smoothens out camera movements.
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	USpringArmComponent* CameraSmoothener;
+
+	// The rendering camera.
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UCameraComponent* Camera;
 
 public:
 	// Sets default values for this character's properties
