@@ -50,6 +50,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Info")
 	FVector LastRotation;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement Settings", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
+	float SmoothFactor = .5f;
+
 	//
 	// Top-down camera properties...
 	//

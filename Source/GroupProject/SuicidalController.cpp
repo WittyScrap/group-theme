@@ -63,7 +63,8 @@ const FVector ASuicidalController::ConsumeMovementVector()
 
 	if (StoredMovement.SizeSquared() > .1f)
 	{
-		LastRotation = StoredMovement.GetSafeNormal(.1f);
+		FVector nextRotation = StoredMovement.GetSafeNormal(.1f);
+		LastRotation = FMath::VInterpTo(LastRotation, nextRotation, SmoothFactor, 1.f);
 	}
 	
 	StoredMovement.X = 0;
