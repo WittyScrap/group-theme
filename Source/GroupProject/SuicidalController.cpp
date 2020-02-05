@@ -27,6 +27,7 @@ void ASuicidalController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ToggleCursor(true);
 }
 
 // The rotation that should be reached.
@@ -36,6 +37,19 @@ const FRotator ASuicidalController::GetDesiredRotation() const
 	rotator.Yaw -= 90.f;
 
 	return rotator;
+}
+
+// Toggles the cursor's visibility.
+void ASuicidalController::ToggleCursor(bool visible)
+{
+	APlayerController* controller = Cast<APlayerController>(GetController());
+
+	if (controller)
+	{
+		controller->bShowMouseCursor = visible;
+		controller->bEnableClickEvents = visible;
+		controller->bEnableMouseOverEvents = visible;
+	}
 }
 
 // Handles controller horizontal movement.
@@ -50,10 +64,61 @@ void ASuicidalController::OnVerticalMovement(float value)
 	RegisterVerticalMovement(value);
 }
 
+// Horizontal camera rotation.
+void ASuicidalController::OnCameraHorizontal(float value)
+{
+	if (State == Panning)
+	{
+		CameraSpring->AddRelativeRotation(FRotator(0, -value, 0));
+	}
+	else if (bDoResetCamera)
+	{
+		FRotator cameraRotation = CameraSpring->GetTargetRotation();
+		FRotator targetRotation = cameraRotation;
+
+		targetRotation.Yaw = 0;
+
+		FRotator nextRotation = FMath::RInterpTo(cameraRotation, targetRotation, SmoothFactor, 1.f);
+
+		CameraSpring->SetRelativeRotation(nextRotation);
+	}
+}
+
+// Vertical camera rotation.
+void ASuicidalController::OnCameraVertical(float value)
+{
+	// Do... nothing?
+	return;
+}
+
 // Performs a jump.
 void ASuicidalController::OnJump()
 {
 	Jump();
+}
+
+// Shift game mode to panning
+void ASuicidalController::OnShiftRotate()
+{
+	State = Panning;
+	ToggleCursor(false);
+
+	if (HasActorBegunPlay())
+	{
+		OnModeChanged(State);
+	}
+}
+
+// Shift game mode to select
+void ASuicidalController::OnShiftSelect()
+{
+	State = Selecting;
+	ToggleCursor(true);
+
+	if (HasActorBegunPlay())
+	{
+		OnModeChanged(State);
+	}
 }
 
 // Consumes the stored movement vector and returns it.
@@ -81,6 +146,8 @@ void ASuicidalController::Tick(float DeltaTime)
 
 	AddMovementInput(ConsumeMovementVector(), 1.f, false);
 	Graphics->SetRelativeRotation(GetDesiredRotation());
+
+
 }
 
 // Called to bind functionality to input
@@ -88,9 +155,16 @@ void ASuicidalController::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Axis
 	PlayerInputComponent->BindAxis(XAxis, this, &ASuicidalController::OnHorizontalMovement);
 	PlayerInputComponent->BindAxis(YAxis, this, &ASuicidalController::OnVerticalMovement);
+	PlayerInputComponent->BindAxis(XMouse, this, &ASuicidalController::OnCameraHorizontal);
+	PlayerInputComponent->BindAxis(YMouse, this, &ASuicidalController::OnCameraVertical);
+
+	// Actions
 	PlayerInputComponent->BindAction(AJump, IE_Pressed, this, &ASuicidalController::OnJump);
+	PlayerInputComponent->BindAction(AShift, IE_Pressed, this, &ASuicidalController::OnShiftRotate);
+	PlayerInputComponent->BindAction(AShift, IE_Released, this, &ASuicidalController::OnShiftSelect);
 }
 
 // Stores horizontal movement.
