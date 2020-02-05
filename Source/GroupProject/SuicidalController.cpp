@@ -9,20 +9,24 @@ ASuicidalController::ASuicidalController()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	USceneComponent* root = GetRootComponent();
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	PlayerGraphics = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerGraphics"));
-	PlayerGraphics->SetupAttachment(root);
+	CameraSpring = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpring"));
+	CameraSpring->SetupAttachment(RootComponent);
+	CameraSpring->SetRelativeLocationAndRotation(CameraStart, CameraTilt);
+	CameraSpring->TargetArmLength = 400.0f;
+	CameraSpring->bEnableCameraLag = true;
+	CameraSpring->CameraLagSpeed = 6.0f;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
-	PlayerCamera->SetupAttachment(PlayerGraphics);
+	PlayerCamera->SetupAttachment(CameraSpring);
 }
 
 // Called when the game starts or when spawned
 void ASuicidalController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Handles controller horizontal movement.

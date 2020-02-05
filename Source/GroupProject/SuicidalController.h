@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
@@ -36,15 +37,24 @@ class GROUPPROJECT_API ASuicidalController : public ACharacter
 	const FName AJump = "Jump";
 	
 protected:
-	// Manages player graphics side.
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UStaticMeshComponent* PlayerGraphics;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Components")
+	USpringArmComponent* CameraSpring;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Components")
 	UCameraComponent* PlayerCamera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	FVector StoredMovement;
+
+	//
+	// Top-down camera properties...
+	//
+
+	UPROPERTY(EditAnywhere, Category = "Top Down Properties")
+	FVector CameraStart = FVector(-100.f, 0.f, 200.f);
+
+	UPROPERTY(EditAnywhere, Category = "Top Down Properties")
+	FRotator CameraTilt = FRotator(-45.f, 0.f, 0.f);
 
 public:
 	// Sets default values for this character's properties
