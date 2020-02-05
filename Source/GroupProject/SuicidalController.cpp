@@ -27,6 +27,7 @@ void ASuicidalController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ToggleCursor(true);
 }
 
 // The rotation that should be reached.
@@ -36,6 +37,19 @@ const FRotator ASuicidalController::GetDesiredRotation() const
 	rotator.Yaw -= 90.f;
 
 	return rotator;
+}
+
+// Toggles the cursor's visibility.
+void ASuicidalController::ToggleCursor(bool visible)
+{
+	APlayerController* controller = Cast<APlayerController>(GetController());
+
+	if (controller)
+	{
+		controller->bShowMouseCursor = visible;
+		controller->bEnableClickEvents = visible;
+		controller->bEnableMouseOverEvents = visible;
+	}
 }
 
 // Handles controller horizontal movement.
@@ -87,6 +101,7 @@ void ASuicidalController::OnJump()
 void ASuicidalController::OnShiftRotate()
 {
 	State = Panning;
+	ToggleCursor(false);
 
 	if (HasActorBegunPlay())
 	{
@@ -98,6 +113,7 @@ void ASuicidalController::OnShiftRotate()
 void ASuicidalController::OnShiftSelect()
 {
 	State = Selecting;
+	ToggleCursor(true);
 
 	if (HasActorBegunPlay())
 	{
@@ -130,6 +146,8 @@ void ASuicidalController::Tick(float DeltaTime)
 
 	AddMovementInput(ConsumeMovementVector(), 1.f, false);
 	Graphics->SetRelativeRotation(GetDesiredRotation());
+
+
 }
 
 // Called to bind functionality to input

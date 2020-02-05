@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/PlayerController.h"
 
 ///////////////////////////////////////////
 #include "SuicidalController.generated.h"//
@@ -48,6 +49,7 @@ class GROUPPROJECT_API ASuicidalController : public ACharacter
 	USkeletalMeshComponent* Graphics;
 
 protected:
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Components")
 	USpringArmComponent* CameraSpring;
 
@@ -77,10 +79,12 @@ protected:
 	FRotator CameraTilt = FRotator(-45.f, 0.f, 0.f);
 
 public:
+
 	// Sets default values for this character's properties
 	ASuicidalController();
 
 protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -89,6 +93,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Events")
 	void OnModeChanged(GameState newState);
+
+	UFUNCTION(BlueprintCallable, Category = "Tools")
+	void ToggleCursor(bool visible);
 
 private:
 
@@ -114,7 +121,8 @@ private:
 	// Consumes the stored movement vector and returns it.
 	const FVector ConsumeMovementVector();
 
-public:	
+public:
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
