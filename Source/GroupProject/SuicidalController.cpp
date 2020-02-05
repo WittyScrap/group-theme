@@ -12,12 +12,14 @@ ASuicidalController::ASuicidalController()
 	CameraSpring = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpring"));
 	CameraSpring->SetupAttachment(RootComponent);
 	CameraSpring->SetRelativeLocationAndRotation(CameraStart, CameraTilt);
-	CameraSpring->TargetArmLength = 400.0f;
+	CameraSpring->TargetArmLength = 1000.f;
 	CameraSpring->bEnableCameraLag = true;
-	CameraSpring->CameraLagSpeed = 6.0f;
+	CameraSpring->CameraLagSpeed = 1.f;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(CameraSpring);
+
+	Graphics = GetMesh();
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +27,15 @@ void ASuicidalController::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+// The rotation that should be reached.
+const FRotator ASuicidalController::GetDesiredRotation() const
+{
+	FRotator rotator = LastRotation.ToOrientationRotator();
+	rotator.Yaw -= 90.f;
+
+	return rotator;
 }
 
 // Handles controller horizontal movement.
@@ -49,6 +60,11 @@ void ASuicidalController::OnJump()
 const FVector ASuicidalController::ConsumeMovementVector()
 {
 	FVector movement(StoredMovement);
+
+	if (StoredMovement.SizeSquared() > .1f)
+	{
+		LastRotation = StoredMovement.GetSafeNormal(.1f);
+	}
 	
 	StoredMovement.X = 0;
 	StoredMovement.Y = 0;
@@ -63,6 +79,7 @@ void ASuicidalController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AddMovementInput(ConsumeMovementVector(), 1.f, false);
+	Graphics->SetRelativeRotation(GetDesiredRotation());
 }
 
 // Called to bind functionality to input
