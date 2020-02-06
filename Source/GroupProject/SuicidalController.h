@@ -21,6 +21,21 @@ enum GameState
 	Panning		UMETA(DisplayName = "Can Rotate View")
 };
 
+UENUM()
+enum LockMode
+{
+	Player		UMETA(DisplayName = "Lock on Player"),
+	FocusPoint	UMETA(DisplayName = "Lock on Focus Point")
+};
+
+UENUM()
+enum CameraMode
+{
+	Perspective UMETA(DisplayName = "Full Perspective"),
+	Orthogonal	UMETA(DisplayName = "Real Orthogonal"),
+	FakeOrtho	UMETA(DisplayName = "False Orthogonal")
+};
+
 UCLASS()
 //
 // Class name: ASuicidalController
@@ -68,8 +83,20 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Game States")
 	TEnumAsByte<GameState> State = Selecting;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
+	TEnumAsByte<LockMode> LockOn = FocusPoint;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Preferences", meta = (EditCondition = "LockOn == FocusPoint"))
+	FVector FocusPointLocation;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
+	TEnumAsByte<CameraMode> ViewMode = FakeOrtho;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Preferences")
 	bool bDoResetCamera = true;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
+	float CameraAngle = 45.f;
 
 	//
 	// Top-down camera properties...
@@ -97,21 +124,21 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Tools")
 	void ToggleCursor(bool visible);
 
-private:
-
 	// Movement
 
-	virtual void OnHorizontalMovement(float value);
-	virtual void OnVerticalMovement(float value);
+	void OnHorizontalMovement(float value);
+	void OnVerticalMovement(float value);
 
 	// Camera
 
-	virtual void OnCameraHorizontal(float value);
-	virtual void OnCameraVertical(float value);
+	void OnCameraHorizontal(float value);
+	void OnCameraVertical(float value);
 
 	// Jump
 
-	virtual void OnJump();
+	void OnJump();
+
+private:
 
 	// Mode switches
 

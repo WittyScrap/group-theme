@@ -14,7 +14,12 @@ ASuicidalController::ASuicidalController()
 	CameraSpring->SetRelativeLocationAndRotation(CameraStart, CameraTilt);
 	CameraSpring->TargetArmLength = 1000.f;
 	CameraSpring->bEnableCameraLag = true;
+	CameraSpring->bEnableCameraRotationLag = true;
 	CameraSpring->CameraLagSpeed = 1.f;
+	CameraSpring->CameraRotationLagSpeed = 1.f;
+	CameraSpring->bInheritPitch = false;
+	CameraSpring->bInheritRoll = false;
+	CameraSpring->bInheritYaw = false;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(CameraSpring);
@@ -28,6 +33,25 @@ void ASuicidalController::BeginPlay()
 	Super::BeginPlay();
 
 	ToggleCursor(true);
+
+	bool bAbs = LockOn == FocusPoint;
+	CameraSpring->SetAbsolute(bAbs, bAbs, bAbs);
+
+	switch (ViewMode)
+	{
+	case FakeOrtho:
+		CameraSpring->TargetArmLength = 5000.f; // Reeeally far away...
+		PlayerCamera->SetFieldOfView(20.f); // Reeeally really tight.
+		// vv Fall-through vv
+
+	case Perspective:
+		PlayerCamera->SetProjectionMode(ECameraProjectionMode::Perspective);
+		break;
+
+	case Orthogonal:
+		PlayerCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
+		break;
+	}
 }
 
 // The rotation that should be reached.
@@ -75,12 +99,9 @@ void ASuicidalController::OnCameraHorizontal(float value)
 	{
 		FRotator cameraRotation = CameraSpring->GetTargetRotation();
 		FRotator targetRotation = cameraRotation;
+		targetRotation.Yaw = CameraAngle;
 
-		targetRotation.Yaw = 0;
-
-		FRotator nextRotation = FMath::RInterpTo(cameraRotation, targetRotation, SmoothFactor, 1.f);
-
-		CameraSpring->SetRelativeRotation(nextRotation);
+		CameraSpring->SetRelativeRotation(targetRotation);
 	}
 }
 
@@ -146,8 +167,6 @@ void ASuicidalController::Tick(float DeltaTime)
 
 	AddMovementInput(ConsumeMovementVector(), 1.f, false);
 	Graphics->SetRelativeRotation(GetDesiredRotation());
-
-
 }
 
 // Called to bind functionality to input
