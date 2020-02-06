@@ -24,7 +24,7 @@ ASuicidalController::ASuicidalController()
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	PlayerCamera->SetupAttachment(CameraSpring);
 
-	Graphics = GetMesh();
+	PlayerRoot = GetCapsuleComponent();
 }
 
 // Called when the game starts or when spawned
@@ -36,6 +36,11 @@ void ASuicidalController::BeginPlay()
 
 	bool bAbs = LockOn == FocusPoint;
 	CameraSpring->SetAbsolute(bAbs, bAbs, bAbs);
+
+	if (bAbs)
+	{
+		CameraSpring->SetWorldLocation(FocusPointLocation);
+	}
 
 	switch (ViewMode)
 	{
@@ -52,6 +57,12 @@ void ASuicidalController::BeginPlay()
 		PlayerCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
 		break;
 	}
+}
+
+// Is this player still alive?
+const bool ASuicidalController::IsAlive() const
+{
+	return Alive;
 }
 
 // The rotation that should be reached.
@@ -166,7 +177,7 @@ void ASuicidalController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AddMovementInput(ConsumeMovementVector(), 1.f, false);
-	Graphics->SetRelativeRotation(GetDesiredRotation());
+	PlayerRoot->SetRelativeRotation(GetDesiredRotation());
 }
 
 // Called to bind functionality to input
