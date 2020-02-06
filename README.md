@@ -1,63 +1,56 @@
-# Generic computer-y game
+# Suicidal Hero
 
-Game where you play as an antivirus fighting a virus on a computer, whilst a different player uses the computer to guide the antivirus player.
-Antivuris player is VR.
+A game about a robot built by two evil scientists with the intention of *destroying the planet*. The robot overhearing their evil plans decides to not want to be a part of it, and decides to dedicate his efforts entirely to preventing their tests on your abilities to perform tasks from succeding, by finding every possible way to die in every single Test Chamber. *The goal of the game is to complete the given test chambers by killing yourself in every single Chamber*. Finishing the Test Chambers "correctly", by finishing the tasks as indicated by the evil scientists, is possible; but will yield a bad ending.
 
-VR player alias: Antivirus<br>
-2D player alias: User
+## Details:
+* The game view will be a Perspective/Orthoghonal 3D top-down view, with the ability to pan and rotate the camera around entire levels.
+* Levels can be completed successfully (by dying) or unsuccessfully (by winning).
+* The main character is a Robot.
+* The setting will be a testing chamber/lab room and adequate props.
+* Ways of death will be limited, but there will be tricks that will require some thinking to be resolved.
+  1. For example, a trampoline over an otherwise obvious drop-to-your-death spot that needs to be moved somehow.
+  2. Or an anti-gravity section that can be exploited by shooting yourself up to the roof.
 
-## Details
+-------------------------------
 
-* Emissive and dark constrast as a general theme
-* Cute/innocent looking viruses turning into monsters?
-* RAM page swaps = rooms swapping in and out
-* Virus that jumps on you if you don't kill it quickly enough and forces you to write some code before a time expires
-* ~~Coop?~~
-* Asymmetric multiplayer: person at computer that knows where everything is and player that can take action.
-* Different weapons for different viruses using colour codes
-* RGB RAINBOW GUN
-* User provides Antivirus with different weapons on request
-* Unlimited bullets
-* Weapon cooldown: CPU usage full
-* Drawbacks TBD
-* More actions for User
+# How to use this repository
 
-## This repository
-Instructions on how to use and maintain the repository
+There have been a few changes to the way this repository needs to be handled to function correctly.<br/>
+The details for this have been listed below.
 
-### Download the project for the first time
-* Head over to the GitHub desktop download page (https://desktop.github.com/)
-* Download GitHub desktop, open it, login with your GitHub account when prompted
-* Select File -> Clone repository
-* If you cannot locate the `group-theme` repository from the GitHub repositories list, click on URL
-* Write `WittyScrap/group-theme` in the URL field
-* Select the local path in which you wish to store the UE4 project
-* Clone the repository
-* Change the current branch from master to the most appropriate for whichever task you will perform
-* Head into the project directory and open the .uproject file from there, alternatively start UE4 (v4.22.3) and locate the project from the open menu within it
+## First set-up
 
-The following steps _may not_ be necessary, but should be followed anyway just for safety.
+1. Head over to the [GitHub Desktop](https://desktop.github.com/) download page.
+2. Download GitHub Desktop, install it, and log in using your GitHub credentials.
+3. Under File, select Clone repository.
+4. Select WittyScrap/group-theme from the repositories list.
+5. Clone the repository in a directory of your choice (or just leave it to the default value).
+6. In the "Current branch" dropdown, select the branch that is most appropriate for your needs. Please make sure that you only use your assigned branch. After switching branches a small loading sequence may happen where the new assets are fetched, allow for that to finish.
+7. Head over to where the repository has been cloned, locate the .uproject file and open it (MAKE SURE YOU SELECT UE 4.22.3).
+8. You will be prompted to rebuild the project, it will notify you that the project may have been built using a different version of the engine, this is not the case: it simply cannot find the compiled C++ classes that were introduced in the project. Allow the engine to rebuild the project.
+9. The project will now be open, and can be used as normal.
 
-* In the Unreal editor, select the Source Control menu from the toolbar
-* Select "Connect to source control"
-* Select GitHub, enter https://github.com/WittyScrap/group-theme.git in the URL field
+## Checking-out (AKA. What to do to synchronise your project with this online repository)
 
-### Commit a change you have made locally
-Before a change gets synchronized back to this repository, it will be made into a local "commit". Commits are simply a list of changes that you have made to the project locally.<br>
-To check in changes locally:
+Note: you do not need to do this if you have just finished the First set-up.
 
-* In the Unreal editor, select the Source Control menu from the toolbar
-* Select the Submit to source control option
-* Enter a message describing what changes you have made
-* Submit
+1. Close any instance of the UE4 editor.
+2. Open GitHub Desktop.
+3. In the Changes tab on the right-hand side of the window, check if there are any pending changes.
+  * If there are:
+    1. Type a message in the Summary/Description fields.
+    2. Click on Commit <your-branch-name>
+4. Click on Repository, then on Pull.
+5. Wait for any changes to your remote to be received.
+6. You may now open the UE4 editor once again, provided no merge conflicts happened.
+  
+## Checking-in (AKA. What to do to push all your work and changes to this online repository)
 
-### Pushing your recent local commits to the online repository
-Committing locally does not alter this online repository, to do so:
-
-* Open GitHub desktop
-* Ensure the Current Repository is set to be the correct one
-* Select the Publish changes option on the toolbar
-* If any merge conflicts ensue, they will need to be discussed
-
-### Refresh your local repository with any new changes in the remote repository
-From within GitHub desktop, select Repository -> Pull
+1. Open GitHub Desktop.
+2. Select the Changes tab on the right-hand side of the window.
+3. Type a message in the Summary/Description fields.
+4. Click on Commit <your-branch-name>.
+5. Click on Repository, then on Pull.
+6. Wait for any changes to your remote to be received.
+7. Click on Repository, then on Push.
+8. Wait for your commits to be uploaded.
