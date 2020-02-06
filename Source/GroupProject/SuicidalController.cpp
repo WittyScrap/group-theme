@@ -156,12 +156,14 @@ void ASuicidalController::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Axis
+
 	PlayerInputComponent->BindAxis(XAxis, this, &ASuicidalController::OnHorizontalMovement);
 	PlayerInputComponent->BindAxis(YAxis, this, &ASuicidalController::OnVerticalMovement);
 	PlayerInputComponent->BindAxis(XMouse, this, &ASuicidalController::OnCameraHorizontal);
 	PlayerInputComponent->BindAxis(YMouse, this, &ASuicidalController::OnCameraVertical);
 
 	// Actions
+
 	PlayerInputComponent->BindAction(AJump, IE_Pressed, this, &ASuicidalController::OnJump);
 	PlayerInputComponent->BindAction(AShift, IE_Pressed, this, &ASuicidalController::OnShiftRotate);
 	PlayerInputComponent->BindAction(AShift, IE_Released, this, &ASuicidalController::OnShiftSelect);
