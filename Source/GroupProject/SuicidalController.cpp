@@ -16,7 +16,7 @@ ASuicidalController::ASuicidalController()
 	CameraSpring->bEnableCameraLag = true;
 	CameraSpring->bEnableCameraRotationLag = true;
 	CameraSpring->CameraLagSpeed = 1.f;
-	CameraSpring->CameraRotationLagSpeed = 5.f;
+	CameraSpring->CameraRotationLagSpeed = 10.f;
 	CameraSpring->bDoCollisionTest = false;
 	CameraSpring->bInheritPitch = false;
 	CameraSpring->bInheritRoll = false;
@@ -58,6 +58,7 @@ void ASuicidalController::BeginPlay()
 		PlayerCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
 		break;
 	}
+
 }
 
 // Is this player still alive?
@@ -69,10 +70,14 @@ const bool ASuicidalController::IsAlive() const
 // The rotation that should be reached.
 const FRotator ASuicidalController::GetDesiredRotation() const
 {
-	FRotator rotator = LastRotation.ToOrientationRotator();
-	rotator.Yaw -= 90.f;
-
-	return rotator;
+	if (LastRotation.SizeSquared() > .1f)
+	{
+		return LastRotation.ToOrientationRotator();
+	}
+	else
+	{
+		return PlayerRoot->GetComponentRotation();
+	}
 }
 
 // Pans camera to the right
