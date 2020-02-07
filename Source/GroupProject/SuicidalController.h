@@ -59,33 +59,43 @@ class GROUPPROJECT_API ASuicidalController : public ACharacter
 
 protected:
 
+	// The camera spring component that handles controlling the camera's position, distance and orientation.
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Components")
 	USpringArmComponent* CameraSpring;
 
+	// The rendering player camera that will automatically be possessed.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Components")
 	UCameraComponent* PlayerCamera;
 
+	// The current stored movement.
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	FVector StoredMovement;
 
+	// The last recorded direction, AKA. the stored movement prior to the last consumption.
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	FVector LastRotation;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Stats")
+	// Whether or not this controller is alive.
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Stats")
 	bool Alive = true;
 
+	// The amount to smoothen the controller's rotation.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement Settings", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
 	float SmoothFactor = .5f;
 
+	// Where the camera should lock on.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
 	TEnumAsByte<LockMode> LockOn = FocusPoint;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Preferences", meta = (EditCondition = "LockOn == FocusPoint"))
+	// The location the camera should focus on, if LockOn is set to FocusPoint. This will be ignored if LockOn is set to Player.
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences", meta = (EditCondition = "LockOn == FocusPoint"))
 	FVector FocusPointLocation;
 
+	// The view mode for the camera.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
 	TEnumAsByte<CameraMode> ViewMode = FakeOrtho;
 
+	// The angle the camera should pitch down.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
 	float CameraAngle = 45.f;
 
@@ -93,73 +103,160 @@ protected:
 	// Top-down camera properties...
 	//
 
-	FVector CameraStart = FVector(-100.f, 0.f, 200.f);
-	FRotator CameraTilt = FRotator(-45.f, 0.f, 0.f);
-	FTransform WorldDirRef = FTransform(FRotator::ZeroRotator, FVector::ZeroVector);
+	FVector		CameraStart = FVector(-100.f, 0.f, 200.f);
+	FRotator	CameraTilt = FRotator(-45.f, 0.f, 0.f);
+	FTransform	WorldDirRef = FTransform(FRotator::ZeroRotator, FVector::ZeroVector);
 
 public:
 
-	// Sets default values for this character's properties
+	/*
+	 * Creates a new suicidal controller character
+	 * using default component values and generated
+	 * types.
+	 *
+	 */
 	ASuicidalController();
 
+	/* 
+	 * Checks whether or not this character is alive.
+	 *
+	 * @return Whether or not this character is alive.
+	 */
 	UFUNCTION(BlueprintPure, Category = "Stats")
 	const bool IsAlive() const;
 
 protected:
 
-	// Called when the game starts or when spawned
+	/*
+	 * Event method invoked when the game has
+	 * just begun.
+	 *
+	 */
 	virtual void BeginPlay() override;
 
+	/*
+	 * Calculates the rotation that this actor should be facing
+	 * given the previously consumed movement vector on the last
+	 * game tick.
+	 *
+	 * @return The direction this actor should face.
+	 */
 	UFUNCTION(BlueprintPure, Category = "Stats")
 	const FRotator GetDesiredRotation() const;
 
+	/*
+	 * Overridable method that gets invoked when the character
+	 * dies.
+	 *
+	 * @param reason The death reason (e.g. Fell from a high place).
+	 * @return The direction this actor should face.
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Events")
 	void OnDied(const FString& reason);
 
+	/*
+	 * Pans the camera to the right by 90 degrees.
+	 *
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Tools")
 	void PanRight();
 
+	/*
+	 * Pans the camera to the right by -90 degrees.
+	 *
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Tools")
 	void PanLeft();
 
+	/*
+	 * Toggles the cursor's visibility to be either invisible and
+	 * locked or visible and movable within the confines of the
+	 * window.
+	 *
+	 * @param visible Whether or not the cursor should be visible.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Tools")
 	void ToggleCursor(bool visible);
 
-	// Movement
-
+	/*
+	 * Handles character movement on the horizontal (left/right) axis
+	 * relative to where the camera is facing.
+	 *
+	 * @param value The amount of movement.
+	 */
 	void OnHorizontalMovement(float value);
+
+	/*
+	 * Handles character movement on the vertical (forward/backward) axis
+	 * relative to where the camera is facing.
+	 *
+	 * @param value The amount of movement.
+	 */
 	void OnVerticalMovement(float value);
 
-	// Camera
-
+	/*
+	 * Handles cameva rotation movement on the horizontal axis.
+	 *
+	 * @param value The amount of rotation.
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Events")
 	void OnCameraHorizontal(float value);
 
+	/*
+	 * Handles cameva rotation movement on the vertical axis.
+	 *
+	 * @param value The amount of rotation.
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Game Events")
 	void OnCameraVertical(float value);
 
-	// Jump
-
+	/*
+	 * Handles the character jumping.
+	 *
+	 */
 	void OnJump();
 
 private:
 
-	// Consumes the stored movement vector and returns it.
+	/*
+	 * Consumes the movement vector and returns its previous value.
+	 * This will reset the movement vector to its default value of
+	 * (0, 0, 0), and set the look direction to the previous value
+	 * of the movement vector.
+	 *
+	 * @return The direction this actor should face.
+	 */
 	const FVector ConsumeMovementVector();
 
 public:
 
-	// Called every frame
+	/*
+	 * Event handler called on every frame (tick).
+	 *
+	 * @param value The time difference between this frame and the previous frame (ie. how long the previous frame took to render).
+	 */
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	/*
+	 * Prepares user input and binds all necessary axis to mehods.
+	 *
+	 * @param value The player input component.
+	 */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// Registers a new horizontal movement.
+	/*
+	 * Saves horizontal movement and uses it on the next tick.
+	 *
+	 * @param value The amount of movement to register.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Robot Movement")
 	void RegisterHorizontalMovement(const float& value);
 
-	// Registers a new vertical movement.
+	/*
+	 * Saves vertical movement and uses it on the next tick.
+	 *
+	 * @param value The amount of movement to register.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Robot Movement")
 	void RegisterVerticalMovement(const float& value);
 };
