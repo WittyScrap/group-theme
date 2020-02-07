@@ -16,7 +16,8 @@ ASuicidalController::ASuicidalController()
 	CameraSpring->bEnableCameraLag = true;
 	CameraSpring->bEnableCameraRotationLag = true;
 	CameraSpring->CameraLagSpeed = 1.f;
-	CameraSpring->CameraRotationLagSpeed = 1.f;
+	CameraSpring->CameraRotationLagSpeed = 5.f;
+	CameraSpring->bDoCollisionTest = false;
 	CameraSpring->bInheritPitch = false;
 	CameraSpring->bInheritRoll = false;
 	CameraSpring->bInheritYaw = false;
@@ -74,6 +75,24 @@ const FRotator ASuicidalController::GetDesiredRotation() const
 	return rotator;
 }
 
+// Pans camera to the right
+void ASuicidalController::PanRight()
+{
+	FRotator offset(0, -90, 0);
+
+	CameraSpring->AddRelativeRotation(offset);
+	WorldDirRef.ConcatenateRotation(offset.Quaternion());
+}
+
+// Pans camera to the left
+void ASuicidalController::PanLeft()
+{
+	FRotator offset(0, 90, 0);
+
+	CameraSpring->AddRelativeRotation(offset);
+	WorldDirRef.ConcatenateRotation(offset.Quaternion());
+}
+
 // Toggles the cursor's visibility.
 void ASuicidalController::ToggleCursor(bool visible)
 {
@@ -99,68 +118,20 @@ void ASuicidalController::OnVerticalMovement(float value)
 	RegisterVerticalMovement(value);
 }
 
-// Horizontal camera rotation.
-void ASuicidalController::OnCameraHorizontal(float value)
-{
-	if (State == Panning)
-	{
-		CameraSpring->AddRelativeRotation(FRotator(0, -value, 0));
-	}
-	else if (bDoResetCamera)
-	{
-		FRotator cameraRotation = CameraSpring->GetTargetRotation();
-		FRotator targetRotation = cameraRotation;
-		targetRotation.Yaw = CameraAngle;
-
-		CameraSpring->SetRelativeRotation(targetRotation);
-	}
-}
-
-// Vertical camera rotation.
-void ASuicidalController::OnCameraVertical(float value)
-{
-	// Do... nothing?
-	return;
-}
-
 // Performs a jump.
 void ASuicidalController::OnJump()
 {
 	Jump();
 }
 
-// Shift game mode to panning
-void ASuicidalController::OnShiftRotate()
-{
-	State = Panning;
-	ToggleCursor(false);
-
-	if (HasActorBegunPlay())
-	{
-		OnModeChanged(State);
-	}
-}
-
-// Shift game mode to select
-void ASuicidalController::OnShiftSelect()
-{
-	State = Selecting;
-	ToggleCursor(true);
-
-	if (HasActorBegunPlay())
-	{
-		OnModeChanged(State);
-	}
-}
-
 // Consumes the stored movement vector and returns it.
 const FVector ASuicidalController::ConsumeMovementVector()
 {
-	FVector movement(StoredMovement);
+	FVector movement(WorldDirRef.TransformVector(StoredMovement));
 
-	if (StoredMovement.SizeSquared() > .1f)
+	if (movement.SizeSquared() > .1f)
 	{
-		FVector nextRotation = StoredMovement.GetSafeNormal(.1f);
+		FVector nextRotation = movement.GetSafeNormal(.1f);
 		LastRotation = FMath::VInterpTo(LastRotation, nextRotation, SmoothFactor, 1.f);
 	}
 	
@@ -195,8 +166,8 @@ void ASuicidalController::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	// Actions
 
 	PlayerInputComponent->BindAction(AJump, IE_Pressed, this, &ASuicidalController::OnJump);
-	PlayerInputComponent->BindAction(AShift, IE_Pressed, this, &ASuicidalController::OnShiftRotate);
-	PlayerInputComponent->BindAction(AShift, IE_Released, this, &ASuicidalController::OnShiftSelect);
+	PlayerInputComponent->BindAction(ALeft, IE_Pressed, this, &ASuicidalController::PanLeft);
+	PlayerInputComponent->BindAction(ARight, IE_Pressed, this, &ASuicidalController::PanRight);
 }
 
 // Stores horizontal movement.
