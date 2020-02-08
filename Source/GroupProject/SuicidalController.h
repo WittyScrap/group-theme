@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ///////////////////////////////////////////
 #include "SuicidalController.generated.h"//
@@ -67,13 +68,13 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Components")
 	UCameraComponent* PlayerCamera;
 
+	// The previous frame's stored movement.
+	UPROPERTY()
+	FVector PreviousMovement;
+
 	// The current stored movement.
 	UPROPERTY(VisibleAnywhere, Category = "Stats")
 	FVector StoredMovement;
-
-	// The last recorded direction, AKA. the stored movement prior to the last consumption.
-	UPROPERTY(VisibleAnywhere, Category = "Stats")
-	FVector LastRotation;
 
 	// Whether or not this controller is alive.
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Stats")
@@ -106,6 +107,7 @@ protected:
 	FVector		CameraStart = FVector(-100.f, 0.f, 200.f);
 	FRotator	CameraTilt = FRotator(-45.f, 0.f, 0.f);
 	FTransform	WorldDirRef = FTransform(FRotator::ZeroRotator, FVector::ZeroVector);
+	FRotator	LastRotation = FRotator(0, 0, 0);
 
 public:
 
@@ -133,16 +135,6 @@ protected:
 	 *
 	 */
 	virtual void BeginPlay() override;
-
-	/*
-	 * Calculates the rotation that this actor should be facing
-	 * given the previously consumed movement vector on the last
-	 * game tick.
-	 *
-	 * @return The direction this actor should face.
-	 */
-	UFUNCTION(BlueprintPure, Category = "Stats")
-	const FRotator GetDesiredRotation() const;
 
 	/*
 	 * Overridable method that gets invoked when the character
@@ -215,6 +207,15 @@ protected:
 	 *
 	 */
 	void OnJump();
+
+	/*
+	 * Retrieves the rotation that this controller should be facing
+	 * given the last movement vector.
+	 *
+	 * @return The rotation this controller should face.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Tools")
+	const FRotator& GetDesiredRotation();
 
 private:
 

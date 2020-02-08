@@ -26,6 +26,9 @@ ASuicidalController::ASuicidalController()
 	PlayerCamera->SetupAttachment(CameraSpring);
 
 	PlayerRoot = GetCapsuleComponent();
+
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 }
 
 // Called when the game starts or when spawned
@@ -59,25 +62,13 @@ void ASuicidalController::BeginPlay()
 		break;
 	}
 
+	LastRotation = PlayerRoot->GetComponentRotation();
 }
 
 // Is this player still alive?
 const bool ASuicidalController::IsAlive() const
 {
 	return Alive;
-}
-
-// The rotation that should be reached.
-const FRotator ASuicidalController::GetDesiredRotation() const
-{
-	if (LastRotation.SizeSquared() > .1f)
-	{
-		return LastRotation.ToOrientationRotator();
-	}
-	else
-	{
-		return PlayerRoot->GetComponentRotation();
-	}
 }
 
 // Pans camera to the right
@@ -129,17 +120,27 @@ void ASuicidalController::OnJump()
 	Jump();
 }
 
+// The rotation this controller should face.
+const FRotator& ASuicidalController::GetDesiredRotation()
+{
+	if (PreviousMovement.SizeSquared() >= 1.f)
+	{
+		FVector normalizedDirection = PreviousMovement.GetSafeNormal();
+		FRotator normalizedRotation = normalizedDirection.Rotation();
+
+		LastRotation = FMath::RInterpTo(LastRotation, normalizedRotation, SmoothFactor, 1.f);
+	}
+
+	return LastRotation;
+}
+
 // Consumes the stored movement vector and returns it.
 const FVector ASuicidalController::ConsumeMovementVector()
 {
 	FVector movement(WorldDirRef.TransformVector(StoredMovement));
 
-	if (movement.SizeSquared() > .1f)
-	{
-		FVector nextRotation = movement.GetSafeNormal(.1f);
-		LastRotation = FMath::VInterpTo(LastRotation, nextRotation, SmoothFactor, 1.f);
-	}
-	
+	PreviousMovement = movement;
+
 	StoredMovement.X = 0;
 	StoredMovement.Y = 0;
 	StoredMovement.Z = 0;
