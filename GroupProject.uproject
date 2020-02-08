@@ -15,8 +15,8 @@
 	],
 	"Plugins": [
 		{
-			"Name": "HoudiniEngine",
-			"Enabled": true
+			"Name": "SteamVR",
+			"Enabled": false
 		}
 	]
 }
