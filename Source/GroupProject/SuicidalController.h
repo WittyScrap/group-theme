@@ -102,7 +102,7 @@ protected:
 
 	// The amount to smoothen the controller's rotation.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "SuicidalController: Movement Settings", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
-	float SmoothFactor = .5f;
+	float SmoothFactor = .25f;
 
 	// Where the camera should lock on.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "SuicidalController: Preferences")
@@ -114,19 +114,19 @@ protected:
 
 	// The view mode for the camera.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SuicidalController: Preferences")
-	TEnumAsByte<CameraMode> ViewMode = FakeOrtho;
+	TEnumAsByte<CameraMode> ViewMode = Perspective;
 
 	// The angle the camera should pitch down.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "SuicidalController: Preferences")
-	float CameraAngle = 45.f;
+	float CameraAngle = 0.f;
 
 	// The height of the physics capsule for the character.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "SuicidalController: Preferences")
-	float CharacterHeight = 100.f;
+	UPROPERTY()
+	float CharacterHeight = 92.f; // Default height for UE4 characters.
 
 	// The radius of the physics capsule for the character.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "SuicidalController: Preferences")
-	float CharacterRadius = 25.f;
+	UPROPERTY()
+	float CharacterRadius = 40.f; // Default radius for UE4 characters.
 	
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
@@ -134,11 +134,11 @@ protected:
 
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
-	float DecelerationSpeed = 100.f;
+	float DecelerationSpeed = 80.f;
 
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
-	float MovementSpeed = 100.f;
+	float MovementSpeed = 200.f;
 
 	// The jump strength.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
