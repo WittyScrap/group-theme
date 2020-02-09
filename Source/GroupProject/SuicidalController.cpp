@@ -30,7 +30,6 @@ ASuicidalController::ASuicidalController()
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
-	GetCharacterMovement()->bEnablePhysicsInteraction = false;
 }
 
 // Called when the game starts or when spawned
