@@ -136,6 +136,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
 	float DecelerationSpeed = 80.f;
 
+	// The tolerance speed under which the character's velocity will be reset to zero.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
+	float SpeedTolerance = 1.f;
+
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
 	float MovementSpeed = 200.f;

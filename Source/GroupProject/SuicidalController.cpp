@@ -159,27 +159,38 @@ void ASuicidalController::LimitControllerVelocity()
 		CapsuleComponent->SetPhysicsLinearVelocity(newVelocity);
 	}
 
-	if (velocity.SizeSquared() > .01f)
-	{
-		ApplyDrag(velocity);
-	}
+	ApplyDrag(velocity);
 }
 
 // Decelerates this controller.
 void ASuicidalController::ApplyDrag(FVector& velocity)
 {
-	velocity.Normalize();
+	if (velocity.SizeSquared() > (DecelerationSpeed * DecelerationSpeed))
+	{
+		velocity.Normalize();
 
-	UGameUtils::NegateVector(velocity);
-	UGameUtils::MultiplyVector(velocity, DecelerationSpeed);
+		UGameUtils::NegateVector(velocity);
+		UGameUtils::MultiplyVector(velocity, DecelerationSpeed);
 
-	CapsuleComponent->AddImpulse(velocity);
+		velocity.Z = 0;
+
+		CapsuleComponent->AddImpulse(velocity);
+	}
+	else
+	{
+		CapsuleComponent->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	}
 }
 
 // Called every frame
 void ASuicidalController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CapsuleComponent->GetPhysicsLinearVelocity().SizeSquared() < SpeedTolerance)
+	{
+		CapsuleComponent->SetPhysicsLinearVelocity(FVector::ZeroVector);
+	}
 
 	CapsuleComponent->AddImpulse(ConsumeMovementVector());
 	CapsuleComponent->SetRelativeRotation(GetDesiredRotation());
