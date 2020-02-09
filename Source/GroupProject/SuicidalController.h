@@ -289,6 +289,13 @@ private:
 	 */
 	void ApplyDrag(FVector& velocity);
 
+	/*
+	 * Removes any dangling small amount of velocity that this controller
+	 * may have left from previous frames.
+	 *
+	 */
+	void ClearDanglingVelocity();
+
 public:
 
 	/*

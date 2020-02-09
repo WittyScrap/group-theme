@@ -178,7 +178,18 @@ void ASuicidalController::ApplyDrag(FVector& velocity)
 	}
 	else
 	{
-		CapsuleComponent->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		CapsuleComponent->SetPhysicsLinearVelocity(FVector::UpVector * velocity.Z);
+	}
+}
+
+// Removes small amounts of velocity.
+void ASuicidalController::ClearDanglingVelocity()
+{
+	FVector velocity(CapsuleComponent->GetPhysicsLinearVelocity());
+
+	if (velocity.SizeSquared() < SpeedTolerance)
+	{
+		CapsuleComponent->SetPhysicsLinearVelocity(FVector::UpVector * velocity.Z);
 	}
 }
 
@@ -187,11 +198,7 @@ void ASuicidalController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (CapsuleComponent->GetPhysicsLinearVelocity().SizeSquared() < SpeedTolerance)
-	{
-		CapsuleComponent->SetPhysicsLinearVelocity(FVector::ZeroVector);
-	}
-
+	ClearDanglingVelocity();
 	CapsuleComponent->AddImpulse(ConsumeMovementVector());
 	CapsuleComponent->SetRelativeRotation(GetDesiredRotation());
 	LimitControllerVelocity();
