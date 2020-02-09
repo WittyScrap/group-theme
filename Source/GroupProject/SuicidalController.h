@@ -15,6 +15,13 @@
 #include "SuicidalController.generated.h"//
 ///////////////////////////////////////////
 
+/*
+ * Forward declaration for:
+ * AMovableObject class.
+ *
+ */
+class AMovableObject;
+
 UENUM()
 enum LockMode
 {
@@ -60,12 +67,15 @@ class GROUPPROJECT_API ASuicidalController : public ACharacter
 
 protected:
 
-	// The camera spring component that handles controlling the camera's position, distance and orientation.
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Components")
+	AMovableObject* HeldObject;
+
+	// The camera spring component that handles controlling the camera's position, distance and orientation.
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* CameraSpring;
 
 	// The rendering player camera that will automatically be possessed.
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Components")
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	UCameraComponent* PlayerCamera;
 
 	// The previous frame's stored movement.
@@ -81,7 +91,7 @@ protected:
 	bool Alive = true;
 
 	// The amount to smoothen the controller's rotation.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement Settings", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Movement Settings", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
 	float SmoothFactor = .5f;
 
 	// Where the camera should lock on.
@@ -89,15 +99,15 @@ protected:
 	TEnumAsByte<LockMode> LockOn = FocusPoint;
 
 	// The location the camera should focus on, if LockOn is set to FocusPoint. This will be ignored if LockOn is set to Player.
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences", meta = (EditCondition = "LockOn == FocusPoint"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Preferences", meta = (EditCondition = "LockOn == FocusPoint"))
 	FVector FocusPointLocation;
 
 	// The view mode for the camera.
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Preferences")
 	TEnumAsByte<CameraMode> ViewMode = FakeOrtho;
 
 	// The angle the camera should pitch down.
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Preferences")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Preferences")
 	float CameraAngle = 45.f;
 
 	//

@@ -2,6 +2,7 @@
 
 
 #include "SuicidalController.h"
+#include "MovableObject.h"
 
 // Sets default values
 ASuicidalController::ASuicidalController()
