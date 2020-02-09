@@ -4,12 +4,7 @@
 #include "GameUtils.h"
 
 
-/**
- * Print:
- * Allows for a log message to be printed to either the log
- * console or the screen.
- *
- */
+// Prints to the console and the screen.
 void UGameUtils::Print(FString text, bool log, FColor color, float time)
 {
 	if (GEngine)
@@ -21,4 +16,20 @@ void UGameUtils::Print(FString text, bool log, FColor color, float time)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *text);
 	}
+}
+
+// Inverts a vector.
+void UGameUtils::NegateVector(FVector& inOutVector)
+{
+	inOutVector.X *= -1;
+	inOutVector.Y *= -1;
+	inOutVector.Z *= -1;
+}
+
+// Multiplies a vector by a value.
+void UGameUtils::MultiplyVector(FVector& inOutVector, const float& value)
+{
+	inOutVector.X *= value;
+	inOutVector.Y *= value;
+	inOutVector.Z *= value;
 }
