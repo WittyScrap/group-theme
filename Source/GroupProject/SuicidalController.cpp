@@ -16,6 +16,9 @@ ASuicidalController::ASuicidalController()
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 	CapsuleComponent->SetGenerateOverlapEvents(true);
 	CapsuleComponent->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+	CapsuleComponent->BodyInstance.bLockXRotation = true;
+	CapsuleComponent->BodyInstance.bLockYRotation = true;
+	CapsuleComponent->BodyInstance.bLockZRotation = false;
 	RootComponent = CapsuleComponent;
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
@@ -142,6 +145,37 @@ const FVector ASuicidalController::ConsumeMovementVector()
 	return PreviousMovement;
 }
 
+// Stops the controller from moving too quickly.
+void ASuicidalController::LimitControllerVelocity()
+{
+	CapsuleComponent->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+	FVector velocity(CapsuleComponent->GetPhysicsLinearVelocity());
+
+	if (velocity.SizeSquared() > (MovementSpeed * MovementSpeed))
+	{
+		FVector newVelocity = velocity.GetClampedToMaxSize(MovementSpeed);
+		newVelocity.Z = velocity.Z;
+
+		CapsuleComponent->SetPhysicsLinearVelocity(newVelocity);
+	}
+
+	if (velocity.SizeSquared() > .01f)
+	{
+		ApplyDrag(velocity);
+	}
+}
+
+// Decelerates this controller.
+void ASuicidalController::ApplyDrag(FVector& velocity)
+{
+	velocity.Normalize();
+
+	UGameUtils::NegateVector(velocity);
+	UGameUtils::MultiplyVector(velocity, DecelerationSpeed);
+
+	CapsuleComponent->AddImpulse(velocity);
+}
+
 // Called every frame
 void ASuicidalController::Tick(float DeltaTime)
 {
@@ -149,6 +183,7 @@ void ASuicidalController::Tick(float DeltaTime)
 
 	CapsuleComponent->AddImpulse(ConsumeMovementVector());
 	CapsuleComponent->SetRelativeRotation(GetDesiredRotation());
+	LimitControllerVelocity();
 }
 
 // Called to bind functionality to input

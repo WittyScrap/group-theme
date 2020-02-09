@@ -13,6 +13,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameUtils.h"
 
 ///////////////////////////////////////////
 #include "SuicidalController.generated.h"//
@@ -130,6 +131,10 @@ protected:
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
 	float AccelerationSpeed = 100.f;
+
+	// The horizontal movement speed.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
+	float DecelerationSpeed = 100.f;
 
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
@@ -265,6 +270,20 @@ private:
 	 * @return The direction this actor should face.
 	 */
 	const FVector ConsumeMovementVector();
+
+	/*
+	 * Limits this controller's velocity to the stored MovementSpeed.
+	 *
+	 */
+	void LimitControllerVelocity();
+
+	/*
+	 * Slowly decreases the velocity of this controller by applying a
+	 * force inverse from its current velocity at a speed defined by
+	 * the DecelerationSpeed.
+	 *
+	 */
+	void ApplyDrag(FVector& velocity);
 
 public:
 
