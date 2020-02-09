@@ -14,7 +14,8 @@ ASuicidalController::ASuicidalController()
 	CapsuleComponent->InitCapsuleSize(CharacterRadius, CharacterHeight * .5f);
 	CapsuleComponent->SetSimulatePhysics(true);
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-
+	CapsuleComponent->SetGenerateOverlapEvents(true);
+	CapsuleComponent->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	RootComponent = CapsuleComponent;
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
@@ -172,12 +173,12 @@ void ASuicidalController::SetupPlayerInputComponent(UInputComponent* PlayerInput
 // Stores horizontal movement.
 void ASuicidalController::RegisterHorizontalMovement(const float& value)
 {
-	AddMovementInput(ToWorld(FVector::ForwardVector), value);
+	AddMovementInput(ToWorld(FVector::ForwardVector), value * AccelerationSpeed);
 }
 
 // Stores vertical movement.
 void ASuicidalController::RegisterVerticalMovement(const float& value)
 {
-	AddMovementInput(ToWorld(FVector::RightVector), value);
+	AddMovementInput(ToWorld(FVector::RightVector), value * AccelerationSpeed);
 }
 

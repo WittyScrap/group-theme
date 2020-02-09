@@ -126,6 +126,10 @@ protected:
 	// The radius of the physics capsule for the character.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "SuicidalController: Preferences")
 	float CharacterRadius = 25.f;
+	
+	// The horizontal movement speed.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
+	float AccelerationSpeed = 100.f;
 
 	// The horizontal movement speed.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
@@ -133,7 +137,7 @@ protected:
 
 	// The jump strength.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "SuicidalController: Movement Settings")
-	float JumpStrength = 100.f;
+	float JumpStrength = 500.f;
 
 	//
 	// Top-down camera properties...
