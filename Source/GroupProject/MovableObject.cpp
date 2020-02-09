@@ -8,40 +8,6 @@ AMovableObject::AMovableObject()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
-	Constraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("Constraint"));
-	Constraint->SetupAttachment(RootComponent);
-
-	Graphics = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Graphics"));
-	Graphics->SetupAttachment(Constraint);
-}
-
-// Set up initial paramaters.
-void AMovableObject::BeginPlay()
-{
-	Graphics->SetSimulatePhysics(bShouldSimulatePhysics);
-	Constraint->ConstraintActor1 = this;
-	Constraint->ComponentName1.ComponentName = *Graphics->GetName();
-	
-	// Set linear limits...
-	Constraint->SetLinearXLimit(GetLinearConstraint(), 0.f);
-	Constraint->SetLinearYLimit(GetLinearConstraint(), 0.f);
-	Constraint->SetLinearZLimit(ELinearConstraintMotion::LCM_Free, 0.f);
-
-	// Set rotation limits...
-	Constraint->SetAngularSwing1Limit(GetAngularConstraint(), 0.f);
-}
-
-// Retrieves the appropriate linear constraint.
-const ELinearConstraintMotion AMovableObject::GetLinearConstraint() const
-{
-	return (ELinearConstraintMotion)((const unsigned char)bOnlySimulateVertically * 2);
-}
-
-// Retrieves the appropriate angular constraint.
-const EAngularConstraintMotion AMovableObject::GetAngularConstraint() const
-{
-	return (EAngularConstraintMotion)((const unsigned char)!bAllowPhysicsRotation * 2);
 }
 
 // Called every frame

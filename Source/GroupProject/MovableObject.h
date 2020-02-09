@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
-#include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "SuicidalController.h"
 
 /////////////////////////////////////////
@@ -18,29 +18,11 @@
  *
  */
 UCLASS()
-class GROUPPROJECT_API AMovableObject : public AActor
+class GROUPPROJECT_API AMovableObject : public AStaticMeshActor
 {
 	GENERATED_BODY()
 
 protected:
-	// The graphics used for this object
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UStaticMeshComponent* Graphics;
-
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UPhysicsConstraintComponent* Constraint;
-
-	// Whether or not this object should simulate physics.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Preferences")
-	bool bShouldSimulatePhysics = true;
-
-	// Whether or not physics should be constrained to the vertical axis only.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Preferences", meta = (EditCondition = "bShouldSimulatePhysics"))
-	bool bOnlySimulateVertically = true;
-
-	// Whether or not the object should be allowed to rotate through physics.
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Preferences", meta = (EditCondition = "bShouldSimulatePhysics"))
-	bool bAllowPhysicsRotation = false;
 
 	// The actor holding this mesh (if any).
 	UPROPERTY()
@@ -53,30 +35,6 @@ public:
 	 */
 	AMovableObject();
 
-	/*
-	 * Sets up the initial parameters for this object.
-	 *
-	 */
-	virtual void BeginPlay() override;
-
-private:
-	/*
-	 * Retrieves the appropriate linear constraint type given the
-	 * choosen parameters from the preferences section.
-	 *
-	 * @return The linear constraint to use.
-	 */
-	const ELinearConstraintMotion GetLinearConstraint() const;
-
-	/*
-	 * Retrieves the appropriate angular constraint type given the
-	 * choosen parameters from the preferences section.
-	 *
-	 * @return The angular constraint to use.
-	 */
-	const EAngularConstraintMotion GetAngularConstraint() const;
-
-public:	
 	/*
 	 * Called every frame
 	 *

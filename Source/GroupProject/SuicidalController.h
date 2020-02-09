@@ -147,6 +147,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	/*
+	 * Converts a relative-direction vector to a world vector
+	 * relative to the internal transform.
+	 *
+	 */
+	const FVector ToWorld(const FVector& relativeDirection);
+
+	/*
 	 * Overridable method that gets invoked when the character
 	 * dies.
 	 *

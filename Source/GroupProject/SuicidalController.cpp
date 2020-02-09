@@ -30,6 +30,7 @@ ASuicidalController::ASuicidalController()
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->bEnablePhysicsInteraction = false;
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +65,12 @@ void ASuicidalController::BeginPlay()
 	}
 
 	LastRotation = PlayerRoot->GetComponentRotation();
+}
+
+// Converts directions from local to world space using transform.
+const FVector ASuicidalController::ToWorld(const FVector& relativeDirection)
+{
+	return WorldDirRef.TransformVector(relativeDirection);
 }
 
 // Is this player still alive?
@@ -138,7 +145,7 @@ const FRotator& ASuicidalController::GetDesiredRotation()
 // Consumes the stored movement vector and returns it.
 const FVector ASuicidalController::ConsumeMovementVector()
 {
-	FVector movement(WorldDirRef.TransformVector(StoredMovement));
+	FVector movement(ToWorld(StoredMovement));
 
 	PreviousMovement = movement;
 
@@ -154,7 +161,7 @@ void ASuicidalController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AddMovementInput(ConsumeMovementVector(), 1.f, false);
+	ConsumeMovementVector();
 	PlayerRoot->SetRelativeRotation(GetDesiredRotation());
 }
 
@@ -181,11 +188,13 @@ void ASuicidalController::SetupPlayerInputComponent(UInputComponent* PlayerInput
 void ASuicidalController::RegisterHorizontalMovement(const float& value)
 {
 	StoredMovement.X += value;
+	AddMovementInput(ToWorld(FVector::ForwardVector * value));
 }
 
 // Stores vertical movement.
 void ASuicidalController::RegisterVerticalMovement(const float& value)
 {
 	StoredMovement.Y += value;
+	AddMovementInput(ToWorld(FVector::RightVector * value));
 }
 
