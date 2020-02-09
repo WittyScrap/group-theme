@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "Puzzle.generated.h"
+
+///////////////////////////////
+#include "Puzzle.generated.h"//
+///////////////////////////////
 
 DECLARE_LOG_CATEGORY_EXTERN(GameLog, Verbose, All);
 

@@ -98,10 +98,10 @@ protected:
 
 	// Whether or not this controller is alive.
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "SuicidalController: Stats")
-	bool Alive = true;
+	bool bAlive = true;
 
 	// The amount to smoothen the controller's rotation.
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "SuicidalController: Movement Settings", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "SuicidalController: Preferences", meta = (Min = 0, Max = 1, ClampMin = 0, ClampMax = 1))
 	float SmoothFactor = .25f;
 
 	// Where the camera should lock on.
@@ -119,6 +119,14 @@ protected:
 	// The angle the camera should pitch down.
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "SuicidalController: Preferences")
 	float CameraAngle = 0.f;
+
+	// The height under which any collision is counted as a grounding collision.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SuicidalController: Preferences")
+	float FeetHeight = 3.f;
+
+	// Whether or not this player should be controllable in mid-air.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SuicidalController: Preferences")
+	bool bAirControl = false;
 
 	// The height of the physics capsule for the character.
 	UPROPERTY()
@@ -157,6 +165,8 @@ protected:
 	FTransform	WorldDirRef = FTransform(FRotator::ZeroRotator, FVector::ZeroVector);
 	FRotator	LastRotation = FRotator(0, 0, 0);
 
+	UPrimitiveComponent* Ground = nullptr;
+
 public:
 
 	/*
@@ -172,8 +182,26 @@ public:
 	 *
 	 * @return Whether or not this character is alive.
 	 */
-	UFUNCTION(BlueprintPure, Category = "Stats")
+	UFUNCTION(BlueprintPure, Category = SuicidalController)
 	const bool IsAlive() const;
+
+	/*
+	 * Checks whether or not this character is grounded.
+	 *
+	 * @return Whether or not this character is grounded.
+	 */
+	UFUNCTION(BlueprintPure, Category = SuicidalController)
+	const bool IsGrounded() const;
+
+	/*
+	 * Checks whether or not this character can be controlled.
+	 * This will always be true if bAirControl is set to true,
+	 * otherwise it'll be the same as IsGrounded().
+	 *
+	 * @return Whether or not this character can be controlled.
+	 */
+	UFUNCTION(BlueprintPure, Category = SuicidalController)
+	const bool CanControl() const;
 
 protected:
 
@@ -260,7 +288,7 @@ protected:
 	 *
 	 * @return The rotation this controller should face.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Tools")
+	UFUNCTION(BlueprintCallable, Category = SuicidalController)
 	const FRotator& GetDesiredRotation();
 
 private:
@@ -296,6 +324,20 @@ private:
 	 */
 	void ClearDanglingVelocity();
 
+	/*
+	 * Performs a grounded check as a result of a collision occurring. 
+	 * Grounded will be set to true when the point of collision is underneath
+	 * the feet height.
+	 *
+	 * @param HitComp The component that was hit.
+	 * @param OtherActor The actor that holds the target component that was hit.
+	 * @param OtherComp The target component that was hit.
+	 * @param NormalInpulse The force required to depenetrate this collision.
+	 * @param Hit Data about this collision.
+	 */
+	UFUNCTION()
+	void PerformGroundedCheck(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 public:
 
 	/*
@@ -317,7 +359,7 @@ public:
 	 *
 	 * @param value The amount of movement to register.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Robot Movement")
+	UFUNCTION(BlueprintCallable, Category = SuicidalController)
 	void RegisterHorizontalMovement(const float& value);
 
 	/*
@@ -325,6 +367,6 @@ public:
 	 *
 	 * @param value The amount of movement to register.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Robot Movement")
+	UFUNCTION(BlueprintCallable, Category = SuicidalController)
 	void RegisterVerticalMovement(const float& value);
 };
