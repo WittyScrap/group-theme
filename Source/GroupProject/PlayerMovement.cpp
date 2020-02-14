@@ -41,7 +41,9 @@ void UPlayerMovement::LimitVelocity()
 
 void UPlayerMovement::CheckGrounded(FVector hitLocation)
 {
-	if (!bIsGrounded && hitLocation.Z < FeetHeight)
+	float feet = FindFeet();
+
+	if (!bIsGrounded && hitLocation.Z < feet)
 	{
 		bIsGrounded = true;
 	}
@@ -49,7 +51,10 @@ void UPlayerMovement::CheckGrounded(FVector hitLocation)
 
 void UPlayerMovement::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	CheckGrounded(GetOwner()->GetTransform().TransformPosition(Hit.ImpactPoint));
+	if (HitComp == Rigidbody)
+	{
+		CheckGrounded(Hit.ImpactPoint);
+	}
 }
 
 // Sets default values for this component's properties
@@ -84,6 +89,14 @@ void UPlayerMovement::BeginPlay()
 void UPlayerMovement::ResetGrounded()
 {
 	bIsGrounded = false;
+}
+
+float UPlayerMovement::FindFeet() const
+{
+	float worldZ = Rigidbody->GetComponentLocation().Z;
+	float halfH = Rigidbody->GetScaledCapsuleHalfHeight();
+
+	return worldZ - (halfH - FeetHeight);
 }
 
 // Called every frame
