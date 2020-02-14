@@ -13,6 +13,18 @@ const int32& AInteractionReceiver::GetID() const
 	return ReceiverID;
 }
 
+void AInteractionReceiver::Set(bool state)
+{
+	if (state)
+	{
+		OnSet();
+	}
+	else
+	{
+		OnUnset();
+	}
+}
+
 void AInteractionReceiver::BeginPlay()
 {
 	Super::BeginPlay();

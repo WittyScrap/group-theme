@@ -8,13 +8,14 @@ void AInteractionManager::Register(AInteractionReceiver* target)
 {
 	if (Targets.Contains(target->GetID()))
 	{
-		TLinkedList<AInteractionReceiver*> list_target = TLinkedList<AInteractionReceiver*>(target);
-		TLinkedList<AInteractionReceiver*>* node = &list_target;
-		Targets[target->GetID()].LinkHead(node);
+		Targets[target->GetID()].push_back(target);
 	}
 	else
 	{
-		Targets[target->GetID()] = TLinkedList<AInteractionReceiver*>(target);
+		std::list<AInteractionReceiver*> nextList;
+		nextList.push_back(target);
+
+		Targets.Add(target->GetID(), nextList);
 	}
 }
 
@@ -25,19 +26,9 @@ void AInteractionManager::Broadcast(const int& requestID, bool stateID)
 		return;
 	}
 
-	TLinkedList<AInteractionReceiver*> it = Targets[requestID];
-
-	for (; it.GetNextLink() != nullptr; it = *it.GetNextLink())
+	const std::list<AInteractionReceiver*>& it = Targets[requestID];
+	for (AInteractionReceiver* receiver : it)
 	{
-		AInteractionReceiver* receiver = *it;
-
-		if (stateID)
-		{
-			receiver->OnSet();
-		}
-		else
-		{
-			receiver->OnUnset();
-		}
+		receiver->Set(stateID);
 	}
 }

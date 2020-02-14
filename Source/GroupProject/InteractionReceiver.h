@@ -25,11 +25,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Receiver: Events") void OnSet();
 	UFUNCTION(BlueprintImplementableEvent, Category = "Receiver: Events") void OnUnset();
 
+	void Set(bool state);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
-
 
 };

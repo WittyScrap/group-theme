@@ -51,4 +51,3 @@ void AInteractionSender::UnsetTriggers(const int32& triggerID)
 {
 	InternalSetTriggers(triggerID, false);
 }
-
