@@ -46,9 +46,7 @@ void UPlayerMovement::CheckGrounded(FVector hitLocation)
 	if (!bIsGrounded && hitLocation.Z < feet)
 	{
 		bIsGrounded = true;
-		FVector vel = Rigidbody->GetPhysicsLinearVelocity();
-		vel.Z = 0;
-		Rigidbody->SetPhysicsLinearVelocity(vel);
+		CancelBounce();
 	}
 }
 
@@ -58,6 +56,14 @@ void UPlayerMovement::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 	{
 		CheckGrounded(Hit.ImpactPoint);
 	}
+}
+
+void UPlayerMovement::CancelBounce()
+{
+	FVector vel = Rigidbody->GetPhysicsLinearVelocity();
+	vel.Z = 0;
+
+	Rigidbody->SetPhysicsLinearVelocity(vel);
 }
 
 // Sets default values for this component's properties
