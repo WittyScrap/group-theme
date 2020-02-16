@@ -22,6 +22,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Player: Info") bool bIsGrounded;
 
 	UCapsuleComponent* Rigidbody;
+	FRotator CapsuleRotation;
 
 private:
 	APawn* GetPawn() const;
@@ -36,6 +37,7 @@ public:
 	UPlayerMovement();
 
 	void AddMovement(float x, float y);
+	void AddRotation(float h);
 	void Jump();
 
 protected:

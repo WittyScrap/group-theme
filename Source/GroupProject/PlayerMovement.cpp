@@ -77,6 +77,11 @@ void UPlayerMovement::AddMovement(float x, float y)
 	GetPawn()->AddMovementInput(Rigidbody->GetForwardVector() * x + Rigidbody->GetRightVector() * y, AccelerationSpeed);
 }
 
+void UPlayerMovement::AddRotation(float h)
+{
+	CapsuleRotation.Yaw += h;
+}
+
 void UPlayerMovement::Jump()
 {
 	if (bIsGrounded)
@@ -93,6 +98,8 @@ void UPlayerMovement::BeginPlay()
 	Rigidbody = Cast<UCapsuleComponent>(GetPawn()->GetComponentByClass(UCapsuleComponent::StaticClass()));
 	Rigidbody->OnComponentHit.AddDynamic(this, &UPlayerMovement::OnHit);
 	SetTickGroup(ETickingGroup::TG_PostPhysics);
+
+	CapsuleRotation = Rigidbody->GetComponentRotation();
 }
 
 void UPlayerMovement::ResetGrounded()
@@ -115,5 +122,7 @@ void UPlayerMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 	HandleMovement();
 	LimitVelocity();
+
+	Rigidbody->SetWorldRotation(CapsuleRotation);
 }
 

@@ -15,7 +15,7 @@ void APlayerBase::Vertical(float value)
 
 void APlayerBase::MouseX(float value)
 {
-	Capsule->AddRelativeRotation(FRotator(0, value * RotationSpeedX * (!InvertX * 2 - 1), 0));
+	Movement->AddRotation(value * RotationSpeedX * (!InvertX * 2 - 1));
 }
 
 void APlayerBase::MouseY(float value)
