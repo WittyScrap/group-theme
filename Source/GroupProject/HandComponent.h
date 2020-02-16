@@ -14,6 +14,7 @@ class GROUPPROJECT_API UHandComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
+public:
 	static constexpr float CoodownTolerance = .01f;
 
 protected:
