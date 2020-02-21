@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "PlayerMovement.h"
+#include "HandComponent.h"
 
 #include "PlayerBase.generated.h"
 
@@ -22,6 +23,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UCameraComponent* Camera;
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UArrowComponent* Arrow;
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UPlayerMovement* Movement;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent* LeftHand;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent* RightHand;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent* Hands;
+
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float RotationSpeedX = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float RotationSpeedY = 1;
@@ -43,5 +48,8 @@ protected:
 
 public:	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void FireSpell();
+	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void IceSpell();
 
 };
