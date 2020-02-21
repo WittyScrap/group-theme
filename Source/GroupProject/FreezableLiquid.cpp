@@ -22,15 +22,7 @@ void AFreezableLiquid::BeginPlay()
 void AFreezableLiquid::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	FVector2D hit(SweepResult.ImpactPoint.X, SweepResult.ImpactPoint.Y);
-
-	if (OtherActor->StaticClass()->ImplementsInterface(*ProjectileFilter))
-	{
-		OnBulletHit(hit);
-	}
-	else
-	{
-		OnOtherHit(hit);
-	}
+	OnWaterEntered(hit);
 }
 
 void AFreezableLiquid::CreateIsland(const FVector2D& location)

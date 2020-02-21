@@ -18,13 +18,10 @@ class GROUPPROJECT_API AFreezableLiquid : public AActor
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Components) UStaticMeshComponent* Geometry;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Freezable Liquid: Properties") TSubclassOf<AActor> IslandPrefab;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Freezable Liquid: Properties") TSubclassOf<AActor> ProjectileFilter;
 
 	virtual void BeginPlay() override;
 	UFUNCTION() void OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Freezable Liquid: Events") void OnBulletHit(FVector2D location);
-	UFUNCTION(BlueprintImplementableEvent, Category = "Freezable Liquid: Events") void OnOtherHit(FVector2D location);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Freezable Liquid: Events") void OnWaterEntered(FVector2D location);
 
 public:	
 	// Sets default values for this actor's properties
