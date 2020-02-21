@@ -20,7 +20,12 @@ void APlayerBase::MouseX(float value)
 
 void APlayerBase::MouseY(float value)
 {
-	Camera->AddRelativeRotation(FRotator(value * RotationSpeedY * (!InvertY * 2 - 1), 0, 0));
+	float rotationDelta = value * RotationSpeedY * (!InvertY * 2 - 1);
+	FRotator rotation = Camera->GetComponentRotation();
+	rotation.Pitch += rotationDelta;
+	rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
+	rotation.Roll = 0;
+	Camera->SetWorldRotation(rotation);
 }
 
 void APlayerBase::Jump()

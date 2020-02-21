@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool InvertX = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool InvertY = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties", meta = (Min = -90, Max = 0, ClampMin = -90, ClampMax = 0)) float CameraPitchMin = -80.f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties", meta = (Min = 0, Max =  90, ClampMin = 0, ClampMax =  90)) float CameraPitchMax =  80.f;
+
 	void Horizontal(float value);
 	void Vertical(float value);
 	void MouseX(float value);
