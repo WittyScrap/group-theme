@@ -21,18 +21,32 @@ void AFreezableLiquid::BeginPlay()
 
 void AFreezableLiquid::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FVector2D hit(SweepResult.ImpactPoint.X, SweepResult.ImpactPoint.Y);
-	OnWaterEntered(hit);
+	FVector2D hit(OtherActor->GetActorLocation());
+
+	if (CanSpawnIslands(OtherActor))
+	{
+		CreateIsland(hit);
+		OnPlatformCreated(hit);
+	}
+	else
+	{
+		OnEntityEntered(OtherActor, hit);
+	}
 }
 
 void AFreezableLiquid::CreateIsland(const FVector2D& location)
 {
-	FVector worldLocation = FVector(location.X, GetActorLocation().Y, location.Y);
+	FVector worldLocation = FVector(location.X, location.Y, GetActorLocation().Z);
 	UWorld* world = GetWorld();
 
 	if (world)
 	{
 		world->SpawnActor<AActor>(*IslandPrefab, worldLocation, FRotator::ZeroRotator);
 	}
+}
+
+bool AFreezableLiquid::CanSpawnIslands(const AActor* hit) const
+{
+	return hit->GetClass() == ProjectileFilter;
 }
 
