@@ -31,6 +31,39 @@ void UPlayerMovement::LimitVelocity()
 	}
 
 	Rigidbody->SetPhysicsAngularVelocity(FVector::ZeroVector);
+
+	FRotator anomalousRotation = Rigidbody->GetComponentRotation();
+	anomalousRotation.Roll = 0.f;
+	anomalousRotation.Pitch = 0.f;
+
+	Rigidbody->SetWorldRotation(anomalousRotation);
+}
+
+void UPlayerMovement::CheckGrounded(FVector hitLocation)
+{
+	float feet = FindFeet();
+
+	if (!bIsGrounded && hitLocation.Z < feet)
+	{
+		bIsGrounded = true;
+		CancelBounce();
+	}
+}
+
+void UPlayerMovement::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (HitComp == Rigidbody)
+	{
+		CheckGrounded(Hit.ImpactPoint);
+	}
+}
+
+void UPlayerMovement::CancelBounce()
+{
+	FVector vel = Rigidbody->GetPhysicsLinearVelocity();
+	vel.Z = 0;
+
+	Rigidbody->SetPhysicsLinearVelocity(vel);
 }
 
 // Sets default values for this component's properties
@@ -44,9 +77,18 @@ void UPlayerMovement::AddMovement(float x, float y)
 	GetPawn()->AddMovementInput(Rigidbody->GetForwardVector() * x + Rigidbody->GetRightVector() * y, AccelerationSpeed);
 }
 
+void UPlayerMovement::AddRotation(float h)
+{
+	CapsuleRotation.Yaw += h;
+}
+
 void UPlayerMovement::Jump()
 {
-	Rigidbody->AddImpulse(FVector::UpVector * JumpStrength, NAME_None, true);
+	if (bIsGrounded)
+	{
+		Rigidbody->AddImpulse(FVector::UpVector * JumpStrength, NAME_None, true);
+		ResetGrounded();
+	}
 }
 
 // Called when the game starts
@@ -54,8 +96,24 @@ void UPlayerMovement::BeginPlay()
 {
 	Super::BeginPlay();
 	Rigidbody = Cast<UCapsuleComponent>(GetPawn()->GetComponentByClass(UCapsuleComponent::StaticClass()));
+	Rigidbody->OnComponentHit.AddDynamic(this, &UPlayerMovement::OnHit);
+	SetTickGroup(ETickingGroup::TG_PostPhysics);
+
+	CapsuleRotation = Rigidbody->GetComponentRotation();
 }
 
+void UPlayerMovement::ResetGrounded()
+{
+	bIsGrounded = false;
+}
+
+float UPlayerMovement::FindFeet() const
+{
+	float worldZ = Rigidbody->GetComponentLocation().Z;
+	float halfH = Rigidbody->GetScaledCapsuleHalfHeight();
+
+	return worldZ - (halfH - FeetHeight);
+}
 
 // Called every frame
 void UPlayerMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -64,5 +122,7 @@ void UPlayerMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 	HandleMovement();
 	LimitVelocity();
+
+	Rigidbody->SetWorldRotation(CapsuleRotation);
 }
 
