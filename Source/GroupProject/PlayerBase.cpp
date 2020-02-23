@@ -15,12 +15,12 @@ void APlayerBase::Vertical(float value)
 
 void APlayerBase::MouseX(float value)
 {
-	Movement->AddRotation(value * RotationSpeedX * (!InvertX * 2 - 1));
+	Movement->AddRotation(value * RotationSpeedX * (!bInvertX * 2 - 1));
 }
 
 void APlayerBase::MouseY(float value)
 {
-	float rotationDelta = value * RotationSpeedY * (!InvertY * 2 - 1);
+	float rotationDelta = value * RotationSpeedY * (!bInvertY * 2 - 1);
 	FRotator rotation = Camera->GetComponentRotation();
 	rotation.Pitch += rotationDelta;
 	rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
@@ -93,5 +93,10 @@ void APlayerBase::FireSpell()
 void APlayerBase::IceSpell()
 {
 	RightHand->Fire();
+}
+
+void APlayerBase::SetInvincible(const bool& state)
+{
+	bInvincible = state;
 }
 
