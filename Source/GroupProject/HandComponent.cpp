@@ -24,8 +24,6 @@ void UHandComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	if (Cooldown > 0)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Cooldown: %f, reducing by: %f"), Cooldown, DeltaTime);
-
 		Cooldown -= DeltaTime;
 
 		if (Cooldown < 0)

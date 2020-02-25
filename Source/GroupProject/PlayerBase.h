@@ -30,8 +30,12 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float RotationSpeedX = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float RotationSpeedY = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool InvertX = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool InvertY = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool bInvertX = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool bInvertY = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool bInvincible = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties", meta = (Min = -90, Max = 0, ClampMin = -90, ClampMax = 0)) float CameraPitchMin = -80.f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties", meta = (Min = 0, Max =  90, ClampMin = 0, ClampMax =  90)) float CameraPitchMax =  80.f;
 
 	void Horizontal(float value);
 	void Vertical(float value);
@@ -51,5 +55,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void FireSpell();
 	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void IceSpell();
+
+	UFUNCTION(Exec) void SetInvincible(const bool& state);
 
 };
