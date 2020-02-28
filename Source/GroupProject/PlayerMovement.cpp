@@ -50,6 +50,23 @@ void UPlayerMovement::CheckGrounded(FVector hitLocation)
 	}
 }
 
+void UPlayerMovement::ApplyGravity()
+{
+	FVector direction = FVector::DownVector;
+	float multiplier = 1;
+
+	if (IsJumping())
+	{
+		multiplier = JumpGravity;
+	}
+	else
+	{
+		multiplier = Gravity;
+	}
+
+	Rigidbody->AddImpulse(direction * multiplier, NAME_None, true);
+}
+
 void UPlayerMovement::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (HitComp == Rigidbody)
@@ -66,6 +83,11 @@ void UPlayerMovement::CancelBounce()
 	Rigidbody->SetPhysicsLinearVelocity(vel);
 }
 
+bool UPlayerMovement::IsJumping() const
+{
+	return Rigidbody->GetPhysicsLinearVelocity().Z > 0;
+}
+
 // Sets default values for this component's properties
 UPlayerMovement::UPlayerMovement()
 {
@@ -75,7 +97,6 @@ UPlayerMovement::UPlayerMovement()
 void UPlayerMovement::AddMovement(float x, float y)
 {
 	GetPawn()->AddMovementInput(Rigidbody->GetForwardVector() * x + Rigidbody->GetRightVector() * y, AccelerationSpeed);
-	ExpectedVelocity = Rigidbody->GetPhysicsLinearVelocity();
 }
 
 void UPlayerMovement::AddRotation(float h)
@@ -98,6 +119,7 @@ void UPlayerMovement::BeginPlay()
 	Super::BeginPlay();
 	Rigidbody = Cast<UCapsuleComponent>(GetPawn()->GetComponentByClass(UCapsuleComponent::StaticClass()));
 	Rigidbody->OnComponentHit.AddDynamic(this, &UPlayerMovement::OnHit);
+	Rigidbody->BodyInstance.bEnableGravity = false;
 	SetTickGroup(ETickingGroup::TG_PostPhysics);
 
 	CapsuleRotation = Rigidbody->GetComponentRotation();
@@ -116,16 +138,12 @@ float UPlayerMovement::FindFeet() const
 	return worldZ - (halfH - FeetHeight);
 }
 
-const FVector& UPlayerMovement::GetExpectedVelocity() const
-{
-	return ExpectedVelocity;
-}
-
 // Called every frame
 void UPlayerMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	ApplyGravity();
 	HandleMovement();
 	LimitVelocity();
 

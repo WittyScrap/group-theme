@@ -17,50 +17,43 @@ ASpellActor::ASpellActor()
 
 void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->GetClass() == BurnProjectile && bCanBurn)
+	UClass* otherClass = OtherActor->GetClass();
+
+	if (otherClass != BurnProjectile && otherClass != FreezeProjectile)
 	{
-		switch (State)
-		{
-		case TS_None:
-			OnBurned(OtherActor);
-			State = TS_Burned;
-			break;
-
-		case TS_Frozen:
-			OnThawed(OtherActor);
-			State = TS_None;
-			break;
-		}
-
-		if (bDestroyBullet)
-		{
-			OtherActor->Destroy();
-		}
-
 		return;
 	}
 
-	if (OtherActor->GetClass() == FreezeProjectile && bCanFreeze)
+	switch (State)
 	{
-		switch (State)
+	case TS_None:
+		if (otherClass == BurnProjectile && bCanBurn)
 		{
-		case TS_None:
+			OnBurned(OtherActor);
+			OnStateChanged(OtherActor, State = TS_Burned);
+		}
+		else if (bCanFreeze)
+		{
 			OnFrozen(OtherActor);
-			State = TS_Frozen;
-			break;
-
-		case TS_Burned:
-			OnThawed(OtherActor);
-			State = TS_None;
-			break;
+			OnStateChanged(OtherActor, State = TS_Frozen);
 		}
+		break;
 
-		if (bDestroyBullet)
+	case TS_Frozen:
+		if (otherClass == BurnProjectile)
 		{
-			OtherActor->Destroy();
+			OnThawed(OtherActor);
+			OnStateChanged(OtherActor, State = TS_None);
 		}
+		break;
 
-		return;
+	case TS_Burned:
+		if (otherClass == FreezeProjectile)
+		{
+			OnThawed(OtherActor);
+			OnStateChanged(OtherActor, State = TS_None);
+		}
+		break;
 	}
 }
 

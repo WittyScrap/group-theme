@@ -45,6 +45,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnFrozen(AActor* bullet);
 	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnThawed(AActor* bullet);
 	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnBurned(AActor* bullet);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnStateChanged(AActor* bullet, UTemperatureState state);
 
 	UFUNCTION(BlueprintCallable, Category = "Spell Actor: State") const UTemperatureState& GetState() const;
 };
