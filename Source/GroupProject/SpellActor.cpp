@@ -24,6 +24,8 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 		return;
 	}
 
+	bool consume = false;
+
 	switch (State)
 	{
 	case TS_None:
@@ -31,12 +33,15 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 			OnBurned(OtherActor);
 			OnStateChanged(OtherActor, State = TS_Burned);
+			consume = true;
 		}
-		else if (bCanFreeze)
+		else if (otherClass == FreezeProjectile && bCanFreeze)
 		{
 			OnFrozen(OtherActor);
 			OnStateChanged(OtherActor, State = TS_Frozen);
+			consume = true;
 		}
+
 		break;
 
 	case TS_Frozen:
@@ -44,6 +49,7 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 			OnThawed(OtherActor);
 			OnStateChanged(OtherActor, State = TS_None);
+			consume = true;
 		}
 		break;
 
@@ -52,8 +58,14 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 			OnThawed(OtherActor);
 			OnStateChanged(OtherActor, State = TS_None);
+			consume = true;
 		}
 		break;
+	}
+
+	if (bDestroyBullet && (consume || bEvenWhenIgnored))
+	{
+		OtherActor->Destroy();
 	}
 }
 
