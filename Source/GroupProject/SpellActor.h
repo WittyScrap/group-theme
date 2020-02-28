@@ -31,6 +31,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bCanBurn = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bCanFreeze = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bDestroyBullet = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties", meta = (EditCondition = "bDestroyBullet")) bool bEvenWhenIgnored = true;
 
 public:
 	ASpellActor();
