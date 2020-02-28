@@ -27,6 +27,9 @@ void AFreezableLiquid::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AA
 	{
 		CreateIsland(hit);
 		OnPlatformCreated(hit);
+
+		// Destroy projectile to prevent it from bouncing and creating another island.
+		OtherActor->Destroy();
 	}
 	else
 	{
