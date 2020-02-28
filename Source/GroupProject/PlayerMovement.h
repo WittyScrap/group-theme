@@ -13,6 +13,9 @@ class GROUPPROJECT_API UPlayerMovement : public UActorComponent
 {
 	GENERATED_BODY()
 
+private:
+	FVector ExpectedVelocity;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player: Properties") float AccelerationSpeed = 100.f;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Player: Properties") float MaximumSpeed = 150.f;
@@ -44,6 +47,7 @@ protected:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void ResetGrounded();
 	UFUNCTION(BlueprintCallable, Category = "Player: Data") float FindFeet() const;
+	UFUNCTION(BlueprintCallable, Category = "Player: Data") const FVector& GetExpectedVelocity() const;
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

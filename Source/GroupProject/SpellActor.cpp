@@ -23,11 +23,18 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 		case TS_None:
 			OnBurned(OtherActor);
+			State = TS_Burned;
 			break;
 
 		case TS_Frozen:
 			OnThawed(OtherActor);
+			State = TS_None;
 			break;
+		}
+
+		if (bDestroyBullet)
+		{
+			OtherActor->Destroy();
 		}
 
 		return;
@@ -39,11 +46,18 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 		case TS_None:
 			OnFrozen(OtherActor);
+			State = TS_Frozen;
 			break;
 
 		case TS_Burned:
 			OnThawed(OtherActor);
+			State = TS_None;
 			break;
+		}
+
+		if (bDestroyBullet)
+		{
+			OtherActor->Destroy();
 		}
 
 		return;

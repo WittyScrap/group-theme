@@ -75,6 +75,7 @@ UPlayerMovement::UPlayerMovement()
 void UPlayerMovement::AddMovement(float x, float y)
 {
 	GetPawn()->AddMovementInput(Rigidbody->GetForwardVector() * x + Rigidbody->GetRightVector() * y, AccelerationSpeed);
+	ExpectedVelocity = Rigidbody->GetPhysicsLinearVelocity();
 }
 
 void UPlayerMovement::AddRotation(float h)
@@ -113,6 +114,11 @@ float UPlayerMovement::FindFeet() const
 	float halfH = Rigidbody->GetScaledCapsuleHalfHeight();
 
 	return worldZ - (halfH - FeetHeight);
+}
+
+const FVector& UPlayerMovement::GetExpectedVelocity() const
+{
+	return ExpectedVelocity;
 }
 
 // Called every frame

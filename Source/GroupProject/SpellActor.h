@@ -30,6 +30,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Filters")		UClass* FreezeProjectile;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bCanBurn = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bCanFreeze = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bDestroyBullet = true;
 
 public:
 	ASpellActor();
