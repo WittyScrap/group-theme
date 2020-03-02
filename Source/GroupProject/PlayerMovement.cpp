@@ -69,7 +69,7 @@ void UPlayerMovement::ApplyGravity()
 
 void UPlayerMovement::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (HitComp == Rigidbody)
+	if (HitComp == Rigidbody && GetSlope(Hit.ImpactNormal) < MaximumSlope)
 	{
 		CheckGrounded(Hit.ImpactPoint);
 	}
@@ -86,6 +86,11 @@ void UPlayerMovement::CancelBounce()
 bool UPlayerMovement::IsJumping() const
 {
 	return Rigidbody->GetPhysicsLinearVelocity().Z > 0;
+}
+
+float UPlayerMovement::GetSlope(const FVector& impactNormal) const
+{
+	return FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(impactNormal, FVector::UpVector)));
 }
 
 // Sets default values for this component's properties
