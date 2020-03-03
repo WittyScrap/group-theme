@@ -32,14 +32,16 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bCanFreeze = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bDestroyBullet = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties", meta = (EditCondition = "bDestroyBullet")) bool bEvenWhenIgnored = true;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Actor: Properties") TEnumAsByte<UTemperatureState> InitialState = TS_None;
 
 public:
 	ASpellActor();
 
 protected:
 	UFUNCTION() void OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void BeginPlay() override;
 
-public:	
+public:
 	UFUNCTION(Exec) void SetFreezable(bool bState);
 	UFUNCTION(Exec) void SetBurnable(bool bState);
 

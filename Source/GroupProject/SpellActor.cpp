@@ -83,3 +83,8 @@ const UTemperatureState& ASpellActor::GetState() const
 {
 	return State;
 }
+
+void ASpellActor::BeginPlay()
+{
+	State = InitialState;
+}
