@@ -30,6 +30,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool	bInvertX = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool	bInvertY = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool	bInvincible = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") bool	bAlive = true;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties", meta = (Min = -90, Max = 0, ClampMin = -90, ClampMax = 0)) float CameraPitchMin = -80.f;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties", meta = (Min = 0, Max =  90, ClampMin = 0, ClampMax =  90)) float CameraPitchMax =  80.f;

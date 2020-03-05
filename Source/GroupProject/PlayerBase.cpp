@@ -15,32 +15,47 @@ const FVector APlayerBase::Right() const
 
 void APlayerBase::Horizontal(float value)
 {
-	AddMovementInput(Right() * value, 1.f);
+	if (bAlive)
+	{
+		AddMovementInput(Right() * value, 1.f);
+	}
 }
 
 void APlayerBase::Vertical(float value)
 {
-	AddMovementInput(Forward() * value, 1.f);
+	if (bAlive)
+	{
+		AddMovementInput(Forward() * value, 1.f);
+	}
 }
 
 void APlayerBase::MouseX(float value)
 {
-	AddControllerYawInput(value * RotationSpeedX);
+	if (bAlive)
+	{
+		AddControllerYawInput(value * RotationSpeedX);
+	}
 }
 
 void APlayerBase::MouseY(float value)
 {
-	float rotationDelta = value * RotationSpeedY * (!bInvertY * 2 - 1);
-	FRotator rotation = Camera->GetComponentRotation();
-	rotation.Pitch += rotationDelta;
-	rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
-	rotation.Roll = 0;
-	Camera->SetWorldRotation(rotation);
+	if (bAlive)
+	{
+		float rotationDelta = value * RotationSpeedY * (!bInvertY * 2 - 1);
+		FRotator rotation = Camera->GetComponentRotation();
+		rotation.Pitch += rotationDelta;
+		rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
+		rotation.Roll = 0;
+		Camera->SetWorldRotation(rotation);
+	}
 }
 
 void APlayerBase::SwimVertical(float value)
 {
-	AddMovementInput(FVector::UpVector, 1.f);
+	if (bAlive)
+	{
+		AddMovementInput(FVector::UpVector, 1.f);
+	}
 }
 
 APlayerBase::APlayerBase()
@@ -86,12 +101,18 @@ void APlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerBase::FireSpell()
 {
-	LeftHand->Fire();
+	if (bAlive)
+	{
+		LeftHand->Fire();
+	}
 }
 
 void APlayerBase::IceSpell()
 {
-	RightHand->Fire();
+	if (bAlive)
+	{
+		RightHand->Fire();
+	}
 }
 
 void APlayerBase::SetInvincible(const bool& state)
