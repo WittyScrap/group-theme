@@ -3,46 +3,64 @@
 
 #include "PlayerBase.h"
 
+const FVector APlayerBase::Forward() const
+{
+	return GetCapsuleComponent()->GetForwardVector();
+}
+
+const FVector APlayerBase::Right() const
+{
+	return GetCapsuleComponent()->GetRightVector();
+}
+
 void APlayerBase::Horizontal(float value)
 {
-	Movement->AddMovement(0, value);
+	if (bAlive)
+	{
+		AddMovementInput(Right() * value, 1.f);
+	}
 }
 
 void APlayerBase::Vertical(float value)
 {
-	Movement->AddMovement(value, 0);
+	if (bAlive)
+	{
+		AddMovementInput(Forward() * value, 1.f);
+	}
 }
 
 void APlayerBase::MouseX(float value)
 {
-	Movement->AddRotation(value * RotationSpeedX * (!bInvertX * 2 - 1));
+	if (bAlive)
+	{
+		AddControllerYawInput(value * RotationSpeedX);
+	}
 }
 
 void APlayerBase::MouseY(float value)
 {
-	float rotationDelta = value * RotationSpeedY * (!bInvertY * 2 - 1);
-	FRotator rotation = Camera->GetComponentRotation();
-	rotation.Pitch += rotationDelta;
-	rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
-	rotation.Roll = 0;
-	Camera->SetWorldRotation(rotation);
+	if (bAlive)
+	{
+		float rotationDelta = value * RotationSpeedY * (!bInvertY * 2 - 1);
+		FRotator rotation = Camera->GetComponentRotation();
+		rotation.Pitch += rotationDelta;
+		rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
+		rotation.Roll = 0;
+		Camera->SetWorldRotation(rotation);
+	}
 }
 
-void APlayerBase::Jump()
+void APlayerBase::SwimVertical(float value)
 {
-	Movement->Jump();
+	if (bAlive)
+	{
+		AddMovementInput(FVector::UpVector, 1.f);
+	}
 }
 
 APlayerBase::APlayerBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	Capsule->SetSimulatePhysics(true);
-	Capsule->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-	Capsule->GetBodyInstance()->bLockXRotation = true;
-	Capsule->GetBodyInstance()->bLockYRotation = true;
-	RootComponent = Capsule;
 
 	Hands = CreateDefaultSubobject<USceneComponent>(TEXT("Hands"));
 	Hands->SetupAttachment(RootComponent);
@@ -58,12 +76,7 @@ APlayerBase::APlayerBase()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
-	Camera->SetRelativeLocation(FVector::UpVector * Capsule->GetScaledCapsuleHalfHeight());
-
-	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
-	Arrow->SetupAttachment(RootComponent);
-
-	Movement = CreateDefaultSubobject<UPlayerMovement>(TEXT("PlayerMovement"));
+	Camera->SetRelativeLocation(FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 }
 
 void APlayerBase::BeginPlay()
@@ -80,6 +93,7 @@ void APlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("Vertical", this, &APlayerBase::Vertical);
 	PlayerInputComponent->BindAxis("MouseX", this, &APlayerBase::MouseX);
 	PlayerInputComponent->BindAxis("MouseY", this, &APlayerBase::MouseY);
+	PlayerInputComponent->BindAxis("Swim", this, &APlayerBase::SwimVertical);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerBase::Jump);
 	PlayerInputComponent->BindAction("ShootFire", IE_Pressed, this, &APlayerBase::FireSpell);
 	PlayerInputComponent->BindAction("ShootIce", IE_Pressed, this, &APlayerBase::IceSpell);
@@ -87,12 +101,18 @@ void APlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerBase::FireSpell()
 {
-	LeftHand->Fire();
+	if (bAlive)
+	{
+		LeftHand->Fire();
+	}
 }
 
 void APlayerBase::IceSpell()
 {
-	RightHand->Fire();
+	if (bAlive)
+	{
+		RightHand->Fire();
+	}
 }
 
 void APlayerBase::SetInvincible(const bool& state)

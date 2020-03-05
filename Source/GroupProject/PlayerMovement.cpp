@@ -50,9 +50,26 @@ void UPlayerMovement::CheckGrounded(FVector hitLocation)
 	}
 }
 
+void UPlayerMovement::ApplyGravity()
+{
+	FVector direction = FVector::DownVector;
+	float multiplier = 1;
+
+	if (IsJumping())
+	{
+		multiplier = JumpGravity;
+	}
+	else
+	{
+		multiplier = Gravity;
+	}
+
+	Rigidbody->AddImpulse(direction * multiplier, NAME_None, true);
+}
+
 void UPlayerMovement::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (HitComp == Rigidbody)
+	if (HitComp == Rigidbody && GetSlope(Hit.ImpactNormal) < MaximumSlope)
 	{
 		CheckGrounded(Hit.ImpactPoint);
 	}
@@ -64,6 +81,16 @@ void UPlayerMovement::CancelBounce()
 	vel.Z = 0;
 
 	Rigidbody->SetPhysicsLinearVelocity(vel);
+}
+
+bool UPlayerMovement::IsJumping() const
+{
+	return Rigidbody->GetPhysicsLinearVelocity().Z > 0;
+}
+
+float UPlayerMovement::GetSlope(const FVector& impactNormal) const
+{
+	return FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(impactNormal, FVector::UpVector)));
 }
 
 // Sets default values for this component's properties
@@ -97,6 +124,7 @@ void UPlayerMovement::BeginPlay()
 	Super::BeginPlay();
 	Rigidbody = Cast<UCapsuleComponent>(GetPawn()->GetComponentByClass(UCapsuleComponent::StaticClass()));
 	Rigidbody->OnComponentHit.AddDynamic(this, &UPlayerMovement::OnHit);
+	Rigidbody->BodyInstance.bEnableGravity = false;
 	SetTickGroup(ETickingGroup::TG_PostPhysics);
 
 	CapsuleRotation = Rigidbody->GetComponentRotation();
@@ -120,6 +148,7 @@ void UPlayerMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	ApplyGravity();
 	HandleMovement();
 	LimitVelocity();
 
