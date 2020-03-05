@@ -11,7 +11,6 @@ ASpellActor::ASpellActor()
 
 	Geometry = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Geometry"));
 	Geometry->SetGenerateOverlapEvents(true);
-	Geometry->OnComponentBeginOverlap.AddDynamic(this, &ASpellActor::OnOverlapDetected);
 	RootComponent = Geometry;
 }
 
@@ -86,5 +85,8 @@ const UTemperatureState& ASpellActor::GetState() const
 
 void ASpellActor::BeginPlay()
 {
+	Super::BeginPlay();
+
 	State = InitialState;
+	Geometry->OnComponentBeginOverlap.AddDynamic(this, &ASpellActor::OnOverlapDetected);
 }
