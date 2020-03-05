@@ -3,24 +3,34 @@
 
 #include "PlayerBase.h"
 
+const FVector APlayerBase::Forward() const
+{
+	return GetCapsuleComponent()->GetForwardVector();
+}
+
+const FVector APlayerBase::Right() const
+{
+	return GetCapsuleComponent()->GetRightVector();
+}
+
 void APlayerBase::Horizontal(float value)
 {
-	Movement->AddMovement(0, value);
+	AddMovementInput(Right() * value, 1.f);
 }
 
 void APlayerBase::Vertical(float value)
 {
-	Movement->AddMovement(value, 0);
+	AddMovementInput(Forward() * value, 1.f);
 }
 
 void APlayerBase::MouseX(float value)
 {
-	Movement->AddRotation(value * RotationSpeedX * (!InvertX * 2 - 1));
+	AddControllerYawInput(value * RotationSpeedX);
 }
 
 void APlayerBase::MouseY(float value)
 {
-	float rotationDelta = value * RotationSpeedY * (!InvertY * 2 - 1);
+	float rotationDelta = value * RotationSpeedY * (!bInvertY * 2 - 1);
 	FRotator rotation = Camera->GetComponentRotation();
 	rotation.Pitch += rotationDelta;
 	rotation.Pitch = FMath::ClampAngle(rotation.Pitch, CameraPitchMin, CameraPitchMax);
@@ -28,21 +38,9 @@ void APlayerBase::MouseY(float value)
 	Camera->SetWorldRotation(rotation);
 }
 
-void APlayerBase::Jump()
-{
-	Movement->Jump();
-}
-
 APlayerBase::APlayerBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	Capsule->SetSimulatePhysics(true);
-	Capsule->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-	Capsule->GetBodyInstance()->bLockXRotation = true;
-	Capsule->GetBodyInstance()->bLockYRotation = true;
-	RootComponent = Capsule;
 
 	Hands = CreateDefaultSubobject<USceneComponent>(TEXT("Hands"));
 	Hands->SetupAttachment(RootComponent);
@@ -58,12 +56,7 @@ APlayerBase::APlayerBase()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
-	Camera->SetRelativeLocation(FVector::UpVector * Capsule->GetScaledCapsuleHalfHeight());
-
-	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
-	Arrow->SetupAttachment(RootComponent);
-
-	Movement = CreateDefaultSubobject<UPlayerMovement>(TEXT("PlayerMovement"));
+	Camera->SetRelativeLocation(FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 }
 
 void APlayerBase::BeginPlay()
@@ -93,5 +86,10 @@ void APlayerBase::FireSpell()
 void APlayerBase::IceSpell()
 {
 	RightHand->Fire();
+}
+
+void APlayerBase::SetInvincible(const bool& state)
+{
+	bInvincible = state;
 }
 
