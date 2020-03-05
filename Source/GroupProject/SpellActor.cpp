@@ -78,6 +78,44 @@ void ASpellActor::SetBurnable(bool bState)
 	bCanBurn = bState;
 }
 
+void ASpellActor::Burn(bool Force)
+{
+	switch (State)
+	{
+	case TS_None:
+		if (bCanBurn || Force)
+		{
+			OnBurned(nullptr);
+			OnStateChanged(nullptr, State = TS_Burned);
+		}
+		break;
+
+	case TS_Frozen:
+		OnThawed(nullptr);
+		OnStateChanged(nullptr, State = TS_None);
+		break;
+	}
+}
+
+void ASpellActor::Freeze(bool Force)
+{
+	switch (State)
+	{
+	case TS_None:
+		if (bCanFreeze || Force)
+		{
+			OnFrozen(nullptr);
+			OnStateChanged(nullptr, State = TS_Frozen);
+		}
+		break;
+
+	case TS_Burned:
+		OnThawed(nullptr);
+		OnStateChanged(nullptr, State = TS_None);
+		break;
+	}
+}
+
 const UTemperatureState& ASpellActor::GetState() const
 {
 	return State;
