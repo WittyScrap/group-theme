@@ -38,6 +38,11 @@ void APlayerBase::MouseY(float value)
 	Camera->SetWorldRotation(rotation);
 }
 
+void APlayerBase::SwimVertical(float value)
+{
+	AddMovementInput(FVector::UpVector, 1.f);
+}
+
 APlayerBase::APlayerBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -73,6 +78,7 @@ void APlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("Vertical", this, &APlayerBase::Vertical);
 	PlayerInputComponent->BindAxis("MouseX", this, &APlayerBase::MouseX);
 	PlayerInputComponent->BindAxis("MouseY", this, &APlayerBase::MouseY);
+	PlayerInputComponent->BindAxis("Swim", this, &APlayerBase::SwimVertical);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerBase::Jump);
 	PlayerInputComponent->BindAction("ShootFire", IE_Pressed, this, &APlayerBase::FireSpell);
 	PlayerInputComponent->BindAction("ShootIce", IE_Pressed, this, &APlayerBase::IceSpell);

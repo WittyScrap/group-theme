@@ -42,6 +42,8 @@ protected:
 	void MouseX(float value);
 	void MouseY(float value);
 
+	void SwimVertical(float value);
+
 public:
 	APlayerBase();
 
