@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 #include "PlayerMovement.h"
 #include "HandComponent.h"
+#include "Pickup.h"
 
 #include "PlayerBase.generated.h"
 
@@ -52,6 +53,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void FireSpell();
 	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void IceSpell();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Player: Events") void OnPickedUp(APickup* PickedUp);
 
 	UFUNCTION(Exec) void SetInvincible(const bool& state);
 
