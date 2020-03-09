@@ -51,3 +51,8 @@ void UHandComponent::Fire()
 		OnFired();
 	}
 }
+
+void UHandComponent::SetEnabled(bool bState)
+{
+	bEnabled = bState;
+}

@@ -36,4 +36,5 @@ protected:
 
 public:	
 	UFUNCTION(BlueprintCallable, Category = "HandComponent: Actions") void Fire();
+	UFUNCTION(BlueprintCallable, Category = "HandComponent: Actions") void SetEnabled(bool bState);
 };

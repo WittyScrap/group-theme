@@ -120,3 +120,8 @@ void APlayerBase::SetInvincible(const bool& state)
 	bInvincible = state;
 }
 
+void APlayerBase::UnlockHand()
+{
+	RightHand->SetEnabled(true);
+}
+

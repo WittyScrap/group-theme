@@ -60,5 +60,5 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Player: Events") void OnPickedUp(APickup* PickedUp);
 
 	UFUNCTION(Exec) void SetInvincible(const bool& state);
-
+	UFUNCTION(Exec) void UnlockHand();
 };
