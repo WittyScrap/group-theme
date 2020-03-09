@@ -37,6 +37,7 @@ protected:
 
 	const FVector Forward() const;
 	const FVector Right() const;
+	const FVector LookPoint() const;
 
 	void Horizontal(float value);
 	void Vertical(float value);

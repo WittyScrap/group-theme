@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #include "HandComponent.generated.h"
 
@@ -34,7 +35,10 @@ protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void ResetCooldown();
 
+	void FireTowardRotation(const FRotator& Target);
+
 public:	
-	UFUNCTION(BlueprintCallable, Category = "HandComponent: Actions") void Fire();
+	UFUNCTION(BlueprintCallable, Category = "HandComponent: Actions") void FireForward();
+	UFUNCTION(BlueprintCallable, Category = "HandComponent: Actions") void Fire(const FVector& Target);
 	UFUNCTION(BlueprintCallable, Category = "HandComponent: Actions") void SetEnabled(bool bState);
 };

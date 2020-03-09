@@ -2,6 +2,7 @@
 
 
 #include "PlayerBase.h"
+#include "DrawDebugHelpers.h"
 
 const FVector APlayerBase::Forward() const
 {
@@ -11,6 +12,24 @@ const FVector APlayerBase::Forward() const
 const FVector APlayerBase::Right() const
 {
 	return GetCapsuleComponent()->GetRightVector();
+}
+
+const FVector APlayerBase::LookPoint() const
+{
+	const FVector lineTraceStart(Camera->GetComponentLocation());
+	const FVector lineTraceEnd(Camera->GetComponentLocation() + Camera->GetForwardVector() * 0xFFFFFF); // Far, far away...
+
+	FCollisionQueryParams params;
+	FHitResult outHit;
+
+	if (GetWorld()->LineTraceSingleByChannel(outHit, lineTraceStart, lineTraceEnd, ECC_Visibility, params))
+	{
+		return outHit.ImpactPoint;
+	}
+	else
+	{
+		return lineTraceEnd;
+	}
 }
 
 void APlayerBase::Horizontal(float value)
@@ -103,7 +122,7 @@ void APlayerBase::FireSpell()
 {
 	if (bAlive)
 	{
-		LeftHand->Fire();
+		LeftHand->Fire(LookPoint());
 	}
 }
 
@@ -111,7 +130,7 @@ void APlayerBase::IceSpell()
 {
 	if (bAlive)
 	{
-		RightHand->Fire();
+		RightHand->Fire(LookPoint());
 	}
 }
 
