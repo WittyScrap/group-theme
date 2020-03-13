@@ -37,6 +37,7 @@ protected:
 
 	const FVector Forward() const;
 	const FVector Right() const;
+	const FVector LookPoint() const;
 
 	void Horizontal(float value);
 	void Vertical(float value);
@@ -60,5 +61,5 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Player: Events") void OnPickedUp(APickup* PickedUp);
 
 	UFUNCTION(Exec) void SetInvincible(const bool& state);
-
+	UFUNCTION(Exec) void UnlockHand();
 };
