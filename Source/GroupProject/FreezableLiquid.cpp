@@ -3,6 +3,12 @@
 
 #include "FreezableLiquid.h"
 
+void AFreezableLiquid::RegisterTarget(UPrimitiveComponent* Entity)
+{
+	Entity->OnComponentBeginOverlap.AddDynamic(this, &AFreezableLiquid::OnOverlapDetected);
+	Entity->OnComponentEndOverlap.AddDynamic(this, &AFreezableLiquid::OnOverlapLeft);
+}
+
 // Sets default values
 AFreezableLiquid::AFreezableLiquid()
 {
@@ -28,8 +34,8 @@ void AFreezableLiquid::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AA
 
 	if (CanSpawnIslands(OtherActor))
 	{
-		CreateIsland(hit);
-		OnPlatformCreated(hit);
+		AActor* newPlatform = CreateIsland(hit);
+		OnPlatformCreated(newPlatform, hit);
 
 		// Destroy projectile to prevent it from bouncing and creating another island.
 		OtherActor->Destroy();
@@ -46,15 +52,17 @@ void AFreezableLiquid::OnOverlapLeft(UPrimitiveComponent* OverlappedComp, AActor
 	OnEntityLeft(OtherActor, hit);
 }
 
-void AFreezableLiquid::CreateIsland(const FVector2D& location)
+AActor* AFreezableLiquid::CreateIsland(const FVector2D& location)
 {
 	FVector worldLocation = FVector(location.X, location.Y, GetActorLocation().Z);
 	UWorld* world = GetWorld();
 
 	if (world)
 	{
-		world->SpawnActor<AActor>(*IslandPrefab, worldLocation, FRotator::ZeroRotator);
+		return world->SpawnActor<AActor>(*IslandPrefab, worldLocation, FRotator::ZeroRotator);
 	}
+
+	return nullptr;
 }
 
 bool AFreezableLiquid::CanSpawnIslands(const AActor* hit) const
