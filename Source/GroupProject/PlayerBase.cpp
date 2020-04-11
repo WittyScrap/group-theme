@@ -81,21 +81,21 @@ APlayerBase::APlayerBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	Hands = CreateDefaultSubobject<USceneComponent>(TEXT("Hands"));
-	Hands->SetupAttachment(RootComponent);
-	Hands->SetRelativeLocation(FVector::ZeroVector);
-
-	LeftHand = CreateDefaultSubobject<UHandComponent>(TEXT("LeftHand"));
-	LeftHand->SetupAttachment(Hands);
-	LeftHand->SetRelativeLocation(FVector::ForwardVector * 100 + FVector::LeftVector * 100);
-
-	RightHand = CreateDefaultSubobject<UHandComponent>(TEXT("RightHand"));
-	RightHand->SetupAttachment(Hands);
-	RightHand->SetRelativeLocation(FVector::ForwardVector * 100 + FVector::RightVector * 100);
-
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+
+	Hands = CreateDefaultSubobject<USceneComponent>(TEXT("Hands"));
+	Hands->SetupAttachment(Camera);
+	Hands->SetRelativeLocation(FVector(30.f, 0.f, 0.f));
+
+	LeftHand = CreateDefaultSubobject<UHandComponent>(TEXT("LeftHand"));
+	LeftHand->SetupAttachment(Hands);
+	LeftHand->SetRelativeLocation(FVector(2.f, -15.f, -1.5f));
+
+	RightHand = CreateDefaultSubobject<UHandComponent>(TEXT("RightHand"));
+	RightHand->SetupAttachment(Hands);
+	RightHand->SetRelativeLocation(FVector(2.f, 15.f, -1.5f));
 }
 
 void APlayerBase::BeginPlay()
