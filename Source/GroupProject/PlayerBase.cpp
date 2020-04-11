@@ -122,7 +122,8 @@ void APlayerBase::FireSpell()
 {
 	if (bAlive)
 	{
-		LeftHand->Fire(LookPoint());
+		//LeftHand->Fire(LookPoint());
+		LeftHand->FireForward();
 	}
 }
 
@@ -130,7 +131,8 @@ void APlayerBase::IceSpell()
 {
 	if (bAlive)
 	{
-		RightHand->Fire(LookPoint());
+		//RightHand->Fire(LookPoint());
+		RightHand->FireForward();
 	}
 }
 

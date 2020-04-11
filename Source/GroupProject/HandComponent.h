@@ -30,8 +30,9 @@ public:
 	UHandComponent();
 	virtual void BeginPlay() override;
 
-protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "HandComponent: Events") void OnFired();
+
+protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void ResetCooldown();
 
