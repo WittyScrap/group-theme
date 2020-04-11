@@ -37,6 +37,11 @@ void APlayerBase::Horizontal(float value)
 	if (bAlive)
 	{
 		AddMovementInput(Right() * value, 1.f);
+
+		// Camera Sway
+		FVector position = BodyRoot->RelativeLocation;
+		position.Y = FMath::Lerp(position.Y, -value * SwayStrength, SwaySmoothness);
+		BodyRoot->SetRelativeLocation(position);
 	}
 }
 
@@ -45,6 +50,11 @@ void APlayerBase::Vertical(float value)
 	if (bAlive)
 	{
 		AddMovementInput(Forward() * value, 1.f);
+
+		// Camera Sway
+		FVector position = BodyRoot->RelativeLocation;
+		position.X = FMath::Lerp(position.X, -value * SwayStrength, SwaySmoothness);
+		BodyRoot->SetRelativeLocation(position);
 	}
 }
 
@@ -85,9 +95,13 @@ APlayerBase::APlayerBase()
 	Camera->SetupAttachment(RootComponent);
 	Camera->SetRelativeLocation(FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 
+	BodyRoot = CreateDefaultSubobject<USceneComponent>(TEXT("BodyRoot"));
+	BodyRoot->SetupAttachment(Camera);
+	BodyRoot->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+
 	Hands = CreateDefaultSubobject<USceneComponent>(TEXT("Hands"));
-	Hands->SetupAttachment(Camera);
-	Hands->SetRelativeLocation(FVector(30.f, 0.f, 0.f));
+	Hands->SetupAttachment(BodyRoot);
+	Hands->SetRelativeLocation(FVector(30.f, 0.f, -8.f));
 
 	LeftHand = CreateDefaultSubobject<UHandComponent>(TEXT("LeftHand"));
 	LeftHand->SetupAttachment(Hands);
