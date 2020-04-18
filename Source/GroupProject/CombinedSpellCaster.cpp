@@ -12,13 +12,12 @@ UCombinedSpellCaster::UCombinedSpellCaster()
 }
 
 
-// Called when the game starts
+// Turn off prediction by default so as to not
+// have a dangling line pointing to nowhere...
 void UCombinedSpellCaster::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
+	DisablePrediction();
 }
 
 
@@ -27,7 +26,12 @@ void UCombinedSpellCaster::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (bPredicting && Camera)
+	{
+		FVector&& projectileVelocity = Camera->GetForwardVector() * ProjectileSpeed;
+
+
+	}
 }
 
 void UCombinedSpellCaster::SaveSegment(USplineMeshComponent* segment)
@@ -47,5 +51,32 @@ void UCombinedSpellCaster::ClearSegments()
 	}
 
 	Segments.Empty();
+}
+
+void UCombinedSpellCaster::EnablePrediction()
+{
+	bPredicting = true;
+
+	// Make line visible...
+	for (USplineMeshComponent*& segment : Segments)
+	{
+		segment->bVisible = true;
+	}
+}
+
+void UCombinedSpellCaster::DisablePrediction()
+{
+	bPredicting = false;
+
+	// Make line invisible...
+	for (USplineMeshComponent*& segment : Segments)
+	{
+		segment->bVisible = false;
+	}
+}
+
+void UCombinedSpellCaster::Fire()
+{
+	
 }
 

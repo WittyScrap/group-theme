@@ -8,6 +8,7 @@
 #include "Components/SplineComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Components/SplineMeshComponent.h"
+#include "Camera/CameraComponent.h"
 
 #include "CombinedSpellCaster.generated.h"
 
@@ -17,13 +18,16 @@ class GROUPPROJECT_API UCombinedSpellCaster : public USceneComponent
 	GENERATED_BODY()
 
 	UPROPERTY() TArray<USplineMeshComponent*> Segments;
+	UPROPERTY() bool bPredicting;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Caster: Spawn Properties") TSubclassOf<AActor> ProjectileType;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Caster: Spawn Properties") UStaticMesh* LineMesh;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Caster: Spawn Properties") UHandComponent* LeftHand;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Caster: Spawn Properties") UHandComponent* RightHand;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Caster: Spawn Properties") TEnumAsByte<ESplineMeshAxis::Type> SplineForward;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Spell Caster: Spawn Properties") UHandComponent* LeftHand;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Spell Caster: Spawn Properties") UHandComponent* RightHand;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Spell Caster: Spawn Properties") UCameraComponent* Camera;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Caster: Trajectory") float ProjectileSpeed;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Caster: Trajectory") float ProjectileGravity;
@@ -46,4 +50,10 @@ public:
 
 	void SaveSegment(USplineMeshComponent* segment);
 	void ClearSegments();
+
+	UFUNCTION(BlueprintCallable, Category = "Spell Caster: Actions") void EnablePrediction();
+	UFUNCTION(BlueprintCallable, Category = "Spell Caster: Actions") void DisablePrediction();
+	UFUNCTION(BlueprintCallable, Category = "Spell Caster: Actions") void Fire();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Caster: Events") void OnProjectileFired(const AActor* projectile);
 };

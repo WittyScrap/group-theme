@@ -122,13 +122,16 @@ APlayerBase::APlayerBase()
 	/*TrailGraphics = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TrailGraphics"));
 	TrailGraphics->SetupAttachment(SpellCaster);
 	TrailGraphics->SetRelativeLocation(FVector::ZeroVector);*/
-
-	// ...Assign
-	SpellCaster->ReferenceTrail = Trajectory;
 }
 
 void APlayerBase::OnConstruction(const FTransform& transform)
 {
+	// ...Assign
+	SpellCaster->ReferenceTrail = Trajectory;
+	SpellCaster->LeftHand = LeftHand;
+	SpellCaster->RightHand = RightHand;
+	SpellCaster->Camera = Camera;
+
 	constexpr float defaultLength = 100;
 	const float segmentLength = defaultLength / (SpellCaster->Resolution - 1);
 
