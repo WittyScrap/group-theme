@@ -8,6 +8,9 @@
 #include "Components/ArrowComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/SplineComponent.h"
+#include "Components/SplineMeshComponent.h"
+#include "CombinedSpellCaster.h"
 #include "PlayerMovement.h"
 #include "HandComponent.h"
 #include "Pickup.h"
@@ -20,11 +23,13 @@ class GROUPPROJECT_API APlayerBase : public ACharacter
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UCameraComponent*	Camera;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent*	LeftHand;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent*	RightHand;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent*	BodyRoot;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent*	Hands;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UCameraComponent*		Camera;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent*		LeftHand;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent*		RightHand;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent*		BodyRoot;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent*		Hands;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USplineComponent*		Trajectory;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UCombinedSpellCaster*	SpellCaster;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float	RotationSpeedX = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float	RotationSpeedY = 1;
@@ -51,6 +56,7 @@ protected:
 
 public:
 	APlayerBase();
+	virtual void OnConstruction(const FTransform& transform) override;
 
 protected:
 	virtual void BeginPlay() override;
