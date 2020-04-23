@@ -111,14 +111,6 @@ APlayerBase::APlayerBase()
 	RightHand->SetupAttachment(Hands);
 	RightHand->SetRelativeLocation(FVector(2.f, 15.f, -1.5f));
 
-	SpellCaster = CreateDefaultSubobject<UCombinedSpellCaster>(TEXT("SpellCaster"));
-	SpellCaster->SetupAttachment(BodyRoot);
-	SpellCaster->SetRelativeLocation((RightHand->GetRelativeTransform().GetLocation() + LeftHand->GetRelativeTransform().GetLocation()) / 2.f);
-
-	Trajectory = CreateDefaultSubobject<USplineComponent>(TEXT("Trajectory"));
-	Trajectory->SetupAttachment(SpellCaster);
-	Trajectory->SetRelativeLocation(FVector::ZeroVector);
-
 	/*TrailGraphics = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TrailGraphics"));
 	TrailGraphics->SetupAttachment(SpellCaster);
 	TrailGraphics->SetRelativeLocation(FVector::ZeroVector);*/
@@ -126,49 +118,50 @@ APlayerBase::APlayerBase()
 
 void APlayerBase::OnConstruction(const FTransform& transform)
 {
-	// ...Assign
-	SpellCaster->ReferenceTrail = Trajectory;
-	SpellCaster->LeftHand = LeftHand;
-	SpellCaster->RightHand = RightHand;
-	SpellCaster->Camera = Camera;
+	// Discontinued...
 
-	constexpr float defaultLength = 100;
-	const float segmentLength = defaultLength / (SpellCaster->Resolution - 1);
+	//SpellCaster->ReferenceTrail = Trajectory;
+	//SpellCaster->LeftHand = LeftHand;
+	//SpellCaster->RightHand = RightHand;
+	//SpellCaster->Camera = Camera;
 
-	FVector startPoint;
-	FVector startTangent;
+	//constexpr float defaultLength = 100;
+	//const float segmentLength = defaultLength / (SpellCaster->Resolution - 1);
 
-	FVector endPoint;
-	FVector endTangent;
+	//FVector startPoint;
+	//FVector startTangent;
 
-	Trajectory->ClearSplinePoints();
-	SpellCaster->ClearSegments();
-	
-	UWorld* world = this->GetWorld();
+	//FVector endPoint;
+	//FVector endTangent;
 
-	for (int i = 0; i < SpellCaster->Resolution; ++i)
-	{
-		Trajectory->AddSplineLocalPoint(FVector::ForwardVector * (i * segmentLength));
+	//Trajectory->ClearSplinePoints();
+	//SpellCaster->ClearSegments();
+	//
+	//UWorld* world = this->GetWorld();
 
-		if (i > 0 && SpellCaster->LineMesh)
-		{
-			Trajectory->GetLocationAndTangentAtSplinePoint(i - 1, startPoint, startTangent, ESplineCoordinateSpace::Local);
-			Trajectory->GetLocationAndTangentAtSplinePoint(i, endPoint, endTangent, ESplineCoordinateSpace::Local);
+	//for (int i = 0; i < SpellCaster->Resolution; ++i)
+	//{
+	//	Trajectory->AddSplineLocalPoint(FVector::ForwardVector * (i * segmentLength));
 
-			USplineMeshComponent* s = NewObject<USplineMeshComponent>(this);
-			s->CreationMethod = EComponentCreationMethod::UserConstructionScript;
-			s->SetRelativeScale3D({ 1, SpellCaster->LineWidth / 100.f, 1 });
-			s->SetupAttachment(Trajectory);
-			s->SetMobility(EComponentMobility::Movable);
-			s->SetStaticMesh(SpellCaster->LineMesh);
-			s->RegisterComponentWithWorld(world);
-			s->SetForwardAxis(SpellCaster->SplineForward, true);
-			s->AttachToComponent(Trajectory, FAttachmentTransformRules::KeepRelativeTransform);
-			s->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+	//	if (i > 0 && SpellCaster->LineMesh)
+	//	{
+	//		Trajectory->GetLocationAndTangentAtSplinePoint(i - 1, startPoint, startTangent, ESplineCoordinateSpace::Local);
+	//		Trajectory->GetLocationAndTangentAtSplinePoint(i, endPoint, endTangent, ESplineCoordinateSpace::Local);
 
-			SpellCaster->SaveSegment(s);
-		}
-	}
+	//		USplineMeshComponent* s = NewObject<USplineMeshComponent>(this);
+	//		s->CreationMethod = EComponentCreationMethod::UserConstructionScript;
+	//		s->SetRelativeScale3D({ 1, SpellCaster->LineWidth / 100.f, 1 });
+	//		s->SetupAttachment(Trajectory);
+	//		s->SetMobility(EComponentMobility::Movable);
+	//		s->SetStaticMesh(SpellCaster->LineMesh);
+	//		s->RegisterComponentWithWorld(world);
+	//		s->SetForwardAxis(SpellCaster->SplineForward, true);
+	//		s->AttachToComponent(Trajectory, FAttachmentTransformRules::KeepRelativeTransform);
+	//		s->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+
+	//		SpellCaster->SaveSegment(s);
+	//	}
+	//}
 }
 
 void APlayerBase::BeginPlay()

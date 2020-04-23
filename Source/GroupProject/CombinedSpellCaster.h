@@ -50,6 +50,9 @@ public:
 
 	void SaveSegment(USplineMeshComponent* segment);
 	void ClearSegments();
+		
+	UFUNCTION(BlueprintPure, Category = "Spell Caster: Stats") bool		Predicting()	{ return bPredicting; }
+	UFUNCTION(BlueprintPure, Category = "Spell Caster: Stats") float	Gravity()		{ return ProjectileGravity > 0 ? -ProjectileGravity : ProjectileGravity; }
 
 	UFUNCTION(BlueprintCallable, Category = "Spell Caster: Actions") void EnablePrediction();
 	UFUNCTION(BlueprintCallable, Category = "Spell Caster: Actions") void DisablePrediction();

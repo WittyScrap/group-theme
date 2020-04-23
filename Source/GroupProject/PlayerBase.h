@@ -28,8 +28,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UHandComponent*		RightHand;
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent*		BodyRoot;
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USceneComponent*		Hands;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) USplineComponent*		Trajectory;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = Components) UCombinedSpellCaster*	SpellCaster;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float	RotationSpeedX = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "PlayerBase: Properties") float	RotationSpeedY = 1;

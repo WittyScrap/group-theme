@@ -25,13 +25,6 @@ void UCombinedSpellCaster::BeginPlay()
 void UCombinedSpellCaster::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (bPredicting && Camera)
-	{
-		FVector&& projectileVelocity = Camera->GetForwardVector() * ProjectileSpeed;
-
-
-	}
 }
 
 void UCombinedSpellCaster::SaveSegment(USplineMeshComponent* segment)
@@ -45,7 +38,7 @@ void UCombinedSpellCaster::ClearSegments()
 	{
 		if (Segments[i])
 		{
-			Segments[i]->DetachFromParent();
+			Segments[i]->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 			Segments[i]->UnregisterComponent();
 		}
 	}
