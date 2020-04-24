@@ -51,6 +51,7 @@ protected:
 	void MouseY(float value);
 
 	void SwimVertical(float value);
+	void OnJump();
 
 public:
 	APlayerBase();
