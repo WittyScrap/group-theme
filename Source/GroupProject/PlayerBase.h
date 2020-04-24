@@ -66,6 +66,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player: Actions") void IceSpell();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Player: Events") void OnPickedUp(APickup* PickedUp);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Player: Events") void OnFired(UHandComponent* Hand);
 
 	UFUNCTION(Exec) void SetInvincible(const bool& state);
 	UFUNCTION(Exec) void UnlockHand();
