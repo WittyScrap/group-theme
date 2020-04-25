@@ -87,6 +87,14 @@ void APlayerBase::SwimVertical(float value)
 	}
 }
 
+void APlayerBase::OnJump()
+{
+	if (bAlive)
+	{
+		Jump();
+	}
+}
+
 APlayerBase::APlayerBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -179,7 +187,7 @@ void APlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MouseX", this, &APlayerBase::MouseX);
 	PlayerInputComponent->BindAxis("MouseY", this, &APlayerBase::MouseY);
 	PlayerInputComponent->BindAxis("Swim", this, &APlayerBase::SwimVertical);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerBase::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerBase::OnJump);
 	PlayerInputComponent->BindAction("ShootFire", IE_Pressed, this, &APlayerBase::FireSpell);
 	PlayerInputComponent->BindAction("ShootIce", IE_Pressed, this, &APlayerBase::IceSpell);
 }
@@ -189,6 +197,7 @@ void APlayerBase::FireSpell()
 	if (bAlive)
 	{
 		//LeftHand->Fire(LookPoint());
+		OnFired(LeftHand);
 		LeftHand->FireForward();
 	}
 }
@@ -198,6 +207,7 @@ void APlayerBase::IceSpell()
 	if (bAlive)
 	{
 		//RightHand->Fire(LookPoint());
+		OnFired(RightHand);
 		RightHand->FireForward();
 	}
 }
