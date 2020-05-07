@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
+#include <vector>
 
 #include "SpellActor.generated.h"
 
@@ -22,7 +23,7 @@ class GROUPPROJECT_API ASpellActor : public AActor
 	GENERATED_BODY()
 
 private:
-	UTemperatureState State = TS_None;
+	UPROPERTY(VisibleAnywhere, Category = "Spell Actor: State")		TEnumAsByte<UTemperatureState> State = TS_None;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = Components)				UStaticMeshComponent* Geometry;
@@ -32,7 +33,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bCanFreeze = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties")	bool bDestroyBullet = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spell Actor: Properties", meta = (EditCondition = "bDestroyBullet")) bool bEvenWhenIgnored = true;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Actor: Properties") TEnumAsByte<UTemperatureState> InitialState = TS_None;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Spell Actor: Properties")										 TEnumAsByte<UTemperatureState> InitialState = TS_None;
 
 public:
 	ASpellActor();
@@ -48,10 +49,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnFrozen(AActor* bullet);
 	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnThawed(AActor* bullet);
 	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnBurned(AActor* bullet);
-	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnStateChanged(AActor* bullet, UTemperatureState state);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Spell Actor: Events") void OnStateChanged(AActor* bullet, UTemperatureState newState);
 
 	UFUNCTION(BlueprintCallable, Category = "Spell Actor: Actions") void Burn(bool Force);
 	UFUNCTION(BlueprintCallable, Category = "Spell Actor: Actions") void Freeze(bool Force);
 
-	UFUNCTION(BlueprintCallable, Category = "Spell Actor: State") const UTemperatureState& GetState() const;
+	UFUNCTION(BlueprintCallable, Category = "Spell Actor: State") const UTemperatureState GetState() const;
 };

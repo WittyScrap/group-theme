@@ -16,6 +16,11 @@ ASpellActor::ASpellActor()
 
 void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor->IsPendingKill())
+	{
+		return;
+	}
+
 	UClass* otherClass = OtherActor->GetClass();
 
 	if (otherClass != BurnProjectile && otherClass != FreezeProjectile)
@@ -50,6 +55,7 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 			OnStateChanged(OtherActor, State = TS_None);
 			consume = true;
 		}
+
 		break;
 
 	case TS_Burned:
@@ -59,11 +65,13 @@ void ASpellActor::OnOverlapDetected(UPrimitiveComponent* OverlappedComp, AActor*
 			OnStateChanged(OtherActor, State = TS_None);
 			consume = true;
 		}
+
 		break;
 	}
 
 	if (bDestroyBullet && (consume || bEvenWhenIgnored))
 	{
+		OtherActor->SetActorLocation({ 0, 0, 0 });
 		OtherActor->Destroy();
 	}
 }
@@ -116,7 +124,7 @@ void ASpellActor::Freeze(bool Force)
 	}
 }
 
-const UTemperatureState& ASpellActor::GetState() const
+const UTemperatureState ASpellActor::GetState() const
 {
 	return State;
 }
